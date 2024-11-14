@@ -11,6 +11,7 @@ nav:
   - About: 
     - PASTa Team: about/pastateam.md
     - Version Release Notes: about/releasenotes.md
-    - Cite PASTa: about/citepasta.md
+    - How to Cite PASTa: about/citepasta.md
     - License: about/license.md
-  - Contact Us: contactus.md
+    - Contact Us: contactus.md
+  - Learning Resources: learningresources.md

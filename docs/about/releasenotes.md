@@ -1,3 +1,4 @@
 # Version Release Notes
 
-add version release notes here
+## Version 0.0 (2024-11-30)
+Version detailed in pre-print Biorxiv manuscript.

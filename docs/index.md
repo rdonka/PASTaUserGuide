@@ -28,5 +28,3 @@ Additionally, to provide an example of the full pipeline, the [Example Analyses]
 
 
 Please feel free to reach out with questions, additional functionality requests, and other thoughts! Our contact information is provided [here](https://rdonka.github.io/PASTaUserGuide/contactus/).
-
-testing permissions

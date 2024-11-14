@@ -1,3 +1,3 @@
-# Cite PASTa
+# How to Cite PASTa
 
-add cite info
+*Information on citing the PASTa Protocol coming soon, thanks for checking!*
