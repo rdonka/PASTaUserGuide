@@ -35,7 +35,7 @@ filekeyname = 'File Key.csv'; % Name of csv file containing session information,
 * Fields in subject and file key must be named uniquely. The only field that should be named the same in both keys is Subject.
 
 ## extractTDTdata
-This function is used to extract TDT data from saved blocks recorded via the software _Synapse_. For each block, extractTDTdata calls the function "TDTbin2mat" (TDT, 2019) and inputs the RawFolderPath to extract fiber photometry data recorded with Synapse. Extracted blocks are parsed it into a single data structure containing all fields, streams, and epocs. The function will identify the signal channel by matching the names in the input SIGSTREAMNAMES and the control channel by matching the names in the input BAQSTREAMNAMES. The name inputs can include a list of stream names if channel naming conventions vary by rig. Each block is saved as a separate data structure in a '.mat' file at the location specified by the inputs in extractedfolderpaths. 
+This function is used to extract TDT data from saved blocks recorded via the software _Synapse_. For each block, extractTDTdata calls the function "TDTbin2mat" (TDT, 2019) and inputs the RawFolderPath to extract fiber photometry data recorded with Synapse. Extracted blocks are parsed it into a single data structure containing all fields, streams, and epocs. Extracted signal streams are trimmed to remove the first 5 seconds by default (trimming can be adjusted if desired). The function will identify the signal channel by matching the names in the input SIGSTREAMNAMES and the control channel by matching the names in the input BAQSTREAMNAMES. The name inputs can include a list of stream names if channel naming conventions vary by rig. Each block is saved as a separate data structure in a '.mat' file at the location specified by the inputs in extractedfolderpaths. 
 
 **INPUTS:**
 
@@ -46,7 +46,7 @@ This function is used to extract TDT data from saved blocks recorded via the sof
 
 **OPTIONAL INPUTS:**
 
-* __CLIP:__ the number of seconds to remove on either end of the data streams. If not specified, defaults to 5 seconds.
+* __TRIM:__ the number of seconds to remove on either end of the data streams. If not specified, defaults to 5 seconds.
 * __SKIPEXISTING:__ A binary variable containing a 0 if pre-existing extracted blocks should be re-extracted or a 1 if pre-existing extracted blocks should be skipped. This allows the user to toggle whether or not to extract every block, or only blocks that have not previously been extracted. If not specified, defaults to 1 (skip previously extracted blocks).
 
 **OUTPUTS:**
@@ -60,19 +60,19 @@ baqstreamnames = {'x05A', '405A'}; % All names of background streams across file
 rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths
 extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths
 
-extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames,clip,skipexisting); % extract data
+extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames); % extract data
 ```
 
-**EXAMPLE - MANUALLY SPECIFIED CLIP AND SKIPEXISTING:**
+**EXAMPLE - MANUALLY SPECIFIED TRIM AND SKIPEXISTING:**
 ```
-clip = 3;
+trim = 3;
 skipexisting = 0;
 sigstreamnames = {'x65A', '465A'}; % All names of signal streams across files
 baqstreamnames = {'x05A', '405A'}; % All names of background streams across files
 rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths'
 extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths'
 
-extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames,'clip',clip,'skipexisting',skipexisting); % extract data
+extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames,'trim',trim,'skipexisting',skipexisting); % extract data
 ```
 
 ## loadTDTdata

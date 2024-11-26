@@ -70,7 +70,7 @@ __Code example:__
 ## Extracting the Data
 Prior to beginning analysis, individual session data should be extracted and saved as MATLAB data structures. This makes the process of loading data at the start of each analysis session significantly faster. 
 
-When the raw data is extracted, clipping will be applied by default. This removes the first and last 5 seconds of the session to remove large fluctuations in output signal that occur when the hardware is turned on and off. The number of seconds clipped can be adjusted by overriding the default.
+When the raw data is extracted, trimming will be applied by default. This removes the first and last 5 seconds of the session to remove large fluctuations in output signal that occur when the hardware is turned on and off. The number of seconds trimmed can be adjusted by overriding the default.
 
 ### FUNCTION: _extractdata_
 
@@ -92,7 +92,7 @@ __REQUIRED INPUTS:__
 
 __OPTIONAL INPUTS:__
 
-- __clip:__ Number of seconds to clip at the beginning and end of the session. This defaults to 5 seconds.
+- __trim:__ Number of seconds to remove at the beginning and end of the session. This defaults to 5 seconds.
 
 - __skipexisting:__ This input allows users to toggle if previously extracted raw data files are re-extracted. By default, previously extracted files will be skipped (skipexisting = 1). To override and re-extract all files, set skipexisting = 0.
 
@@ -114,35 +114,35 @@ __REQUIRED INPUTS:__
 __Code example:__
 ![png](../img/datapreparation_7_loadKeydata.png)
 
-## Trimming the Data
+## Cropping the Data
 The final step in data preparation is optional. Photometry recording may start a few seconds before the experiment begins, such as in cases where users have to initiate hardware for operant boxes separately, and after the experiment ends. Additionally, users may want to remove the first few minutes of each session due to the higher rate of photobleaching before the signal stabilizes. 
 
-If desired, data can be trimmed with the function _trimFPdata_, which uses user derived session start and session end indexes to trim data streams and adjust any event epochs (timestamps) to maintain the relationship in time.
+If desired, data can be cropped with the function _cropFPdata_, which uses user derived session start and session end indexes to crop data streams and adjust any event epochs (timestamps) to maintain the relationship in time.
 
 ### Index Preparation
 
-If timestamps for session start and end are included in the raw data collection, then these fields can be used as it. If not, users must first determine the appropriate start and end points from whatever timestamps are relevant. For example, in the example analysis provided the session is trimmed to 15 minutes before the first injection time stamp, and 60 minutes after the second injection time stamp.
+If timestamps for session start and end are included in the raw data collection, then these fields can be used as the cropping start and end points. If not, users must first determine the appropriate start and end points from whatever timestamps are relevant. For example, in the example analysis provided the session is cropped to 15 minutes before the first injection time stamp, and 60 minutes after the second injection time stamp.
 
 __Code example of preparing the start and end indices:__
-![png](../img/datapreparation_8_preparetrimindices.png)
+![png](../img/datapreparation_8_preparecropindices.png)
 
-### FUNCTION: _trimFPdata_
+### FUNCTION: _cropFPdata_
 __REQUIRED INPUTS:__
 
 - __data:__ Data structure created by the _LoadKeyData_ function. Each session should be a separate row. The data structure must containing at least the fields specified in the additional inputs.
 
-- __whichtrimstart:__ A string containing the name of the field with the locations of the session start indices. Everything before the start index will be trimmed.
+- __whichcropstart:__ A string containing the name of the field with the locations of the session start indices. Everything before the start index will be cropped.
 
-- __whichtrimend:__ A string containing the name of the field with the locations of the session end indices. Everything after the end index will be trimmed.
+- __whichcropend:__ A string containing the name of the field with the locations of the session end indices. Everything after the end index will be cropped.
 
-- __whichstreams:__ A cell array containing the field names of all the streams to be trimmed. This should include both the signal and the background streams.
+- __whichstreams:__ A cell array containing the field names of all the streams to be cropped. This should include both the signal and the background streams.
 
 __OPTIONAL INPUTS:__
 
 - __whichepocs:__ A cell array containing the field names of all the epochs (time stamps) to be adjusted. This input can contain as many inputs as the experimental paradigm requires, and each timestamp will be adjusted by subtracting the start index - 1.
 
-__Code example of trimming:__
-![png](../img/datapreparation_9_trimFPdata.png)
+__Code example of cropping:__
+![png](../img/datapreparation_9_cropFPdata.png)
 
 
-After data preparation is complete, move to signal processing.
+After data preparation is complete, move to [Signal Processing](https://rdonka.github.io/PASTaUserGuide/userguide/signalprocessing/).
