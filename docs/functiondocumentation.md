@@ -97,32 +97,32 @@ For use with data collected and stored to a general file structure.
 _coming soon_
 
 
-## trimFPdata
-Used to trim samples at the very start and end of recordings that are not to be included in analysis (such as the the first two minutes of the session, or the first samples before a hardware control program is initiated). Trims all specified data streams from the index in trimstart to the index in trimend, and adjusts epocs by the amount trimmed by trimstart. Users must pre-prepare the trim start and end indexes to specify as inputs for the function.
+## cropFPdata
+Used to crop data streams to remove portions that are not to be included in analysis (such as the the first two minutes of the session, or the first samples before a hardware control program is initiated). Crops all specified data streams from the index in cropstart to the index in cropend, and adjusts epocs by the amount cropped by cropstart. Users must pre-prepare the crop start and end indexes to specify as inputs for the function.
 
 **INPUTS:**
 
 * __DATA:__ A data frame containing at least the specified input fields.
-* __TRIMSTART:__ The location to start trimming at.
-* __TRIMEND:__ The location to end trimming at.
-* __WHICHSTREAMS:__ A cell array containing the names of all the streams to be trimmed.
+* __CROPSTART:__ The location to start cropping at.
+* __CROPEND:__ The location to end cropping at.
+* __WHICHSTREAMS:__ A cell array containing the names of all the streams to be cropped.
 
 **OPTIONAL INPUTS:**
 
-* __WHICHEPOCS:__ A cell array containing the names of all the epocs to be adjusted due to trimming - subtract the (start loc - 1) from the epoc.
+* __WHICHEPOCS:__ A cell array containing the names of all the epocs to be adjusted due to cropping - subtract the (start loc - 1) from the epoc.
 
 **OUTPUTS:**
 
-* __DATA:__ The data structure with the specified data stream containing the trimmed data.
+* __DATA:__ The data structure with the specified data stream containing the cropped data.
 
 **EXAMPLE:**
 ```
-trimstart = 'sessionstart'; % name of field with session start index
-trimend = 'sessionend'; % name of field with session end index
-whichstreams = {'sig', 'baq','time'}; % which streams to trim
+cropstart = 'sessionstart'; % name of field with session start index
+cropend = 'sessionend'; % name of field with session end index
+whichstreams = {'sig', 'baq','time'}; % which streams to crop
 whichepocs = {'injt','sess'}; % which epocs to adjust to maintain relative position
 
-[data] = trimFPdata(rawdata,trimstart,trimend, whichstreams,whichepocs); % Output trimmed data into new structure called data
+[data] = cropFPdata(rawdata,cropstart,cropend, whichstreams,whichepocs); % Output cropped data into new structure called data
 ```
 
 # Signal Processing Functions
@@ -517,4 +517,55 @@ exportSessionTransients(data,'sessiontransients_blmean_threshold3SD',analysispat
 
 % To output the csv file and add the created table to a MATLAB data structure:
 alltransients = exportSessionTransients(data,'sessiontransients_blmean_threshold3SD',analysispath,addvariables);
+```
+
+
+# Visualization and Plotting Functions
+## plotTraces
+Main function to plot whole session fiber photometry traces. This function will plot the streams sig, baq, baq_scaled, sigsub, and sigfilt for a single session. Use this function in a loop to plot streams for all sessions in the data structure. This plot function plots the data streams with time in minutes on the x axis. To modify the plot or add additional features like session relevant time stamps, use the plot in a loop. Modified plots must be saved in the external loop. If modifications are not neccesaary, then optional inputs can be specified to directly output and save the plot to a filepath location.
+
+
+**INPUTS:**
+
+* __DATA:__ This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.
+* __WHICHFILE:__ The file number to be plotted.
+* __MAINTITLE:__ The main title (string) to be displayed for the overall plot above the individual tiles. For example, '427 - Treatment: Morphine'
+
+
+**OPTIONAL INPUTS:**
+
+* __SAVEOUTPUT:__ Set to 1 to automatically save trace plots as png to the plot file path. _Default: 0_
+* __PLOTFILEPATH:__ Required if SAVEOUTPUT is set to 1. The specific path to save the plot to. Note that this must be the entire path from computer address to folder ending in the filename for the specific plot. For example: 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png'
+
+**OUTPUTS:**
+
+* __ALLTRACES:__ A plot object containing subplots for each input stream.
+
+**EXAMPLE: Single Session**
+```
+%% Plot the first session and automatically save the output
+maintitle = append(num2str(data(1).Subject),' - Treatment: ',data(1).InjType); % Create title string for current plot
+plotfilepath = 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png';  % Create plot file path for the current plot
+
+plotTraces(data,1,maintitle,'saveoutput',1,'plotfilepath',plotfilepath);
+```
+
+
+**EXAMPLE: All Sessions**
+```
+%% Plot whole session streams for each file
+% Use plotTraces to plot all raw traces - data needs to contain sig, baq, baq_scaled, sigsub, and sigfilt.
+for eachfile = 1:length(data)
+    maintitle = append(num2str(data(eachfile).Subject),' - Treatment: ',data(eachfile).InjType); % Create title string for current plot
+    alltraces = plotTraces(data,eachfile,maintitle);
+    for eachtile = 1:5
+        nexttile(eachtile)
+        xline(data(eachfile).injt(1),'--','Injection','Color','#C40300','FontSize',8)
+        xline(data(eachfile).injt(2),'--','Color','#C40300','FontSize',8)
+    end    
+
+    set(gcf, 'Units', 'inches', 'Position', [0, 0, 8, 9]);
+    plotfilepath = append(figurepath,'SessionTraces_',num2str(data(eachfile).Subject),'_',data(eachfile).InjType,'.png');
+    exportgraphics(gcf,plotfilepath,'Resolution',300)
+end
 ```
