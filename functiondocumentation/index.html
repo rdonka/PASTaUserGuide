@@ -56,6 +56,10 @@
 <li>
     <a href="../userguide/transientanalysis/" class="dropdown-item">Transient Analysis</a>
 </li>
+                                    
+<li>
+    <a href="../userguide/plotdata/" class="dropdown-item">Data Visualization</a>
+</li>
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -101,7 +105,7 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../userguide/transientanalysis/" class="nav-link">
+                                <a rel="prev" href="../userguide/plotdata/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -151,7 +155,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#trimfpdata" class="nav-link">trimFPdata</a>
+            <li class="nav-item" data-bs-level="2"><a href="#cropfpdata" class="nav-link">cropFPdata</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -172,6 +176,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#preparestreamfft" class="nav-link">preparestreamFFT</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
             
@@ -186,6 +194,19 @@
               </ul>
             </li>
             <li class="nav-item" data-bs-level="2"><a href="#exportsessiontransients" class="nav-link">exportSessionTransients</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#visualization-and-plotting-functions" class="nav-link">Visualization and Plotting Functions</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#plottraces" class="nav-link">plotTraces</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#plotffts" class="nav-link">plotFFTs</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -277,30 +298,30 @@ extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames
 <h2 id="loadcsvdata">loadCSVdata</h2>
 <p>For use with data collected and stored to a general file structure. </p>
 <p><em>coming soon</em></p>
-<h2 id="trimfpdata">trimFPdata</h2>
-<p>Used to trim samples at the very start and end of recordings that are not to be included in analysis (such as the the first two minutes of the session, or the first samples before a hardware control program is initiated). Trims all specified data streams from the index in trimstart to the index in trimend, and adjusts epocs by the amount trimmed by trimstart. Users must pre-prepare the trim start and end indexes to specify as inputs for the function.</p>
+<h2 id="cropfpdata">cropFPdata</h2>
+<p>Used to crop data streams to remove portions that are not to be included in analysis (such as the the first two minutes of the session, or the first samples before a hardware control program is initiated). Crops all specified data streams from the index in cropstart to the index in cropend, and adjusts epocs by the amount cropped by cropstart. Users must pre-prepare the crop start and end indexes to specify as inputs for the function.</p>
 <p><strong>INPUTS:</strong></p>
 <ul>
 <li><strong>DATA:</strong> A data frame containing at least the specified input fields.</li>
-<li><strong>TRIMSTART:</strong> The location to start trimming at.</li>
-<li><strong>TRIMEND:</strong> The location to end trimming at.</li>
-<li><strong>WHICHSTREAMS:</strong> A cell array containing the names of all the streams to be trimmed.</li>
+<li><strong>CROPSTART:</strong> The location to start cropping at.</li>
+<li><strong>CROPEND:</strong> The location to end cropping at.</li>
+<li><strong>WHICHSTREAMS:</strong> A cell array containing the names of all the streams to be cropped.</li>
 </ul>
 <p><strong>OPTIONAL INPUTS:</strong></p>
 <ul>
-<li><strong>WHICHEPOCS:</strong> A cell array containing the names of all the epocs to be adjusted due to trimming - subtract the (start loc - 1) from the epoc.</li>
+<li><strong>WHICHEPOCS:</strong> A cell array containing the names of all the epocs to be adjusted due to cropping - subtract the (start loc - 1) from the epoc.</li>
 </ul>
 <p><strong>OUTPUTS:</strong></p>
 <ul>
-<li><strong>DATA:</strong> The data structure with the specified data stream containing the trimmed data.</li>
+<li><strong>DATA:</strong> The data structure with the specified data stream containing the cropped data.</li>
 </ul>
 <p><strong>EXAMPLE:</strong></p>
-<pre><code>trimstart = 'sessionstart'; % name of field with session start index
-trimend = 'sessionend'; % name of field with session end index
-whichstreams = {'sig', 'baq','time'}; % which streams to trim
+<pre><code>cropstart = 'sessionstart'; % name of field with session start index
+cropend = 'sessionend'; % name of field with session end index
+whichstreams = {'sig', 'baq','time'}; % which streams to crop
 whichepocs = {'injt','sess'}; % which epocs to adjust to maintain relative position
 
-[data] = trimFPdata(rawdata,trimstart,trimend, whichstreams,whichepocs); % Output trimmed data into new structure called data
+[data] = cropFPdata(rawdata,cropstart,cropend, whichstreams,whichepocs); % Output cropped data into new structure called data
 </code></pre>
 <h1 id="signal-processing-functions">Signal Processing Functions</h1>
 <h2 id="subtractfpdata">subtractFPdata</h2>
@@ -405,6 +426,35 @@ end
 
 % Normalize filtered signal to session baseline mean and SD
 [data] = normBaseline(data,'sigfilt','BLstart','BLend');
+</code></pre>
+<h2 id="preparestreamfft">preparestreamFFT</h2>
+<p>Helper function to take the FFT of a data stream and output the magnitudes and corresponding frequencies for analysis, plotting, and diagnostics. This function is called by the plot function <em>plotFFTs</em> but can also be used to prepare FFTs for each stream of data for all sessions with use in a for loop.</p>
+<p><strong>INPUTS:</strong></p>
+<ul>
+<li><strong>STREAMDATA:</strong> An array containing the values from a single collected data stream.</li>
+<li><strong>FS:</strong> The sampling rate of the data stream.</li>
+</ul>
+<p><strong>OUTPUTS:</strong></p>
+<ul>
+<li><strong>STREAMFFT:</strong> An array containing the prepared FFT magnitudes of the input stream.</li>
+<li><strong>STREAMF:</strong> An array containing the corresponding frequencies to the prepared FFT magnitudes in STREAMFFT.</li>
+</ul>
+<p><strong>EXAMPLE OF SINGLE SESSION SIGNAL:</strong></p>
+<pre><code>[streamFFT,streamF] = preparestreamFFT(data(1).sig,data(eachfile).fs);
+</code></pre>
+<p><strong>EXAMPLE OF ALL SESSIONS AND STREAMS:</strong></p>
+<pre><code>%% Prepare FFTs of all streams
+streams = {'sig', 'baq', 'baq_scaled','sigsub', 'sigfilt'};
+
+% Frequency scaled background
+for eachfile = 1:length(data)
+    for eachstream = 1:length(streams)
+        streamname = char(streams(eachstream));
+        [streamFFT,streamF] = preparestreamFFT(data(eachfile).(streamname),data(eachfile).fs);
+        data(eachfile).(append(streamname,'FFT')) = streamFFT;
+        data(eachfile).(append(streamname,'F')) = streamF;
+    end
+end
 </code></pre>
 <h1 id="transient-detection-and-quantification-functions">Transient Detection and Quantification Functions</h1>
 <h2 id="findsessiontransients">findSessionTransients</h2>
@@ -656,6 +706,84 @@ exportSessionTransients(data,'sessiontransients_blmean_threshold3SD',analysispat
 
 % To output the csv file and add the created table to a MATLAB data structure:
 alltransients = exportSessionTransients(data,'sessiontransients_blmean_threshold3SD',analysispath,addvariables);
+</code></pre>
+<h1 id="visualization-and-plotting-functions">Visualization and Plotting Functions</h1>
+<h2 id="plottraces">plotTraces</h2>
+<p>Main function to plot whole session fiber photometry traces. This function will plot the streams sig, baq, baq_scaled, sigsub, and sigfilt for a single session. Use this function in a loop to plot streams for all sessions in the data structure. This plot function plots the data streams with time in minutes on the x axis. To modify the plot or add additional features like session relevant time stamps, use the plot in a loop. Modified plots must be saved in the external loop. If modifications are not neccesaary, then optional inputs can be specified to directly output and save the plot to a filepath location.</p>
+<p><strong>INPUTS:</strong></p>
+<ul>
+<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
+<li><strong>WHICHFILE:</strong> The file number to be plotted.</li>
+<li><strong>MAINTITLE:</strong> The main title (string) to be displayed for the overall plot above the individual tiles. For example, '427 - Treatment: Morphine'</li>
+</ul>
+<p><strong>OPTIONAL INPUTS:</strong></p>
+<ul>
+<li><strong>SAVEOUTPUT:</strong> Set to 1 to automatically save trace plots as png to the plot file path. <em>Default: 0</em></li>
+<li><strong>PLOTFILEPATH:</strong> Required if SAVEOUTPUT is set to 1. The specific path to save the plot to. Note that this must be the entire path from computer address to folder ending in the filename for the specific plot. For example: 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png'</li>
+</ul>
+<p><strong>OUTPUTS:</strong></p>
+<ul>
+<li><strong>ALLTRACES:</strong> A plot object containing subplots for each input stream.</li>
+</ul>
+<p><strong>EXAMPLE: Single Session</strong></p>
+<pre><code>%% Plot the first session and automatically save the output
+maintitle = append(num2str(data(1).Subject),' - Treatment: ',data(1).InjType); % Create title string for current plot
+plotfilepath = 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png';  % Create plot file path for the current plot
+
+plotTraces(data,1,maintitle,'saveoutput',1,'plotfilepath',plotfilepath);
+</code></pre>
+<p><strong>EXAMPLE: All Sessions</strong></p>
+<pre><code>%% Plot whole session streams for each file
+for eachfile = 1:length(data)
+    maintitle = append(num2str(data(eachfile).Subject),' - Treatment: ',data(eachfile).InjType); % Create title string for current plot
+    alltraces = plotTraces(data,eachfile,maintitle);
+    for eachtile = 1:5
+        nexttile(eachtile)
+        xline(data(eachfile).injt(1),'--','Injection','Color','#C40300','FontSize',8)
+        xline(data(eachfile).injt(2),'--','Color','#C40300','FontSize',8)
+    end    
+
+    set(gcf, 'Units', 'inches', 'Position', [0, 0, 8, 9]);
+    plotfilepath = append(figurepath,'SessionTraces_',num2str(data(eachfile).Subject),'_',data(eachfile).InjType,'.png');
+    exportgraphics(gcf,plotfilepath,'Resolution',300)
+end
+</code></pre>
+<h2 id="plotffts">plotFFTs</h2>
+<p>Main function to plot whole session fiber photometry FFT frequency magnitude plots. This function will plot the streams sig, baq, baq_scaled, sigsub, and sigfilt for a single session. Use this function in a loop to plot streams for all sessions in the data structure. By default, only frequencies up to 20 hz will be plotted but users can specify an optional input to adjust the cutoff lower or higher, or set to the actual max for the stream FFT. To modify the plot or add additional features, use the plot in a loop. Modified plots must be saved in the external loop. If modifications are not neccesaary, then optional inputs can be specified to directly output and save the plot to a filepath location.</p>
+<p><strong>INPUTS:</strong></p>
+<ul>
+<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
+<li><strong>WHICHFILE:</strong> The file number to be plotted.</li>
+<li><strong>MAINTITLE:</strong> The main title (string) to be displayed for the overall plot above the individual tiles. For example, '427 - Treatment: Morphine'</li>
+<li><strong>WHICHFS:</strong> The name (string) of the field that contains the sampling rate of the data streams.</li>
+</ul>
+<p><strong>OPTIONAL INPUTS:</strong></p>
+<ul>
+<li><strong>XMAX:</strong> The desired frequency cutoff for the x axis (hz). Frequencies above this value will be excluded from the plots. To plot all frequencies, set to actual'. <em>Default: 20</em></li>
+<li><strong>SAVEOUTPUT:</strong> Set to 1 to automatically save trace plots as png to the plot file path. <em>Default: 0</em></li>
+<li><strong>PLOTFILEPATH:</strong> Required if SAVEOUTPUT is set to 1. The specific path to save the plot to. Note that this must be the entire path from computer address to folder ending in the filename for the specific plot. For example: 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png'</li>
+</ul>
+<p><strong>OUTPUTS:</strong></p>
+<ul>
+<li><strong>ALLFFTS:</strong> A plot object containing subplots for each input stream.</li>
+</ul>
+<p><strong>EXAMPLE: Single Session</strong></p>
+<pre><code>%% Plot the first session and automatically save the output
+maintitle = append(num2str(data(1).Subject),' - Treatment: ',data(1).InjType); % Create title string for current plot
+plotfilepath = 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png';  % Create plot file path for the current plot
+
+plotTraces(data,1,maintitle,'fs','saveoutput',1,'plotfilepath',plotfilepath);
+</code></pre>
+<p><strong>EXAMPLE: All Sessions</strong></p>
+<pre><code>%% Plot stream FFTs for each file
+for eachfile = 1:length(data)
+    maintitle = append(num2str(data(eachfile).Subject),' - Treatment: ',data(eachfile).InjType); % Create title string for current plot
+    allffts = plotFFTs(data,eachfile,maintitle);
+
+    set(gcf, 'Units', 'inches', 'Position', [0, 0, 8, 9]);
+    plotfilepath = append(figurepath,'SessionFFTs_',num2str(data(eachfile).Subject),'_',data(eachfile).InjType,'.png');
+    exportgraphics(gcf,plotfilepath,'Resolution',300)
+end
 </code></pre></div>
             </div>
         </div>
