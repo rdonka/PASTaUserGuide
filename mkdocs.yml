@@ -17,3 +17,8 @@ nav:
     - License: about/license.md
     - Contact Us: contactus.md
   - Learning Resources: learningresources.md
+
+theme:
+  features:
+    - navigation.footer
+    
