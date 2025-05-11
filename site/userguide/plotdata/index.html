@@ -221,7 +221,7 @@
 </li>
 </ul>
 <p><strong>Code example:</strong>
-<img alt="png" src="../../img/datapreparation_5_loadKeys.png" /></p>
+<img alt="png" src="../img/datapreparation_5_loadKeys.png" /></p>
 <h2 id="extracting-the-data">Extracting the Data</h2>
 <p>Prior to beginning analysis, individual session data should be extracted and saved as MATLAB data structures. This makes the process of loading data at the start of each analysis session significantly faster. </p>
 <p>When the raw data is extracted, trimming will be applied by default. This removes the first and last 5 seconds of the session to remove large fluctuations in output signal that occur when the hardware is turned on and off. The number of seconds trimmed can be adjusted by overriding the default.</p>
@@ -257,7 +257,7 @@
 </ul>
 <p>Extracted raw data files are saved to the extracted folder path as individual MATLAB structures.</p>
 <p><strong>Code example:</strong>
-<img alt="png" src="../../img/datapreparation_6_extractTDTdata.png" /></p>
+<img alt="png" src="../img/datapreparation_6_extractTDTdata.png" /></p>
 <h2 id="loading-the-data">Loading the Data</h2>
 <p>After raw data is extracted, it can be matched to the experimentkey to associate any subject and session metadata with the photometry data. All sessions will be loaded into one data structure (typically called <em>rawdata</em>), to ensure that all sessions are analyzed in the same way throughout following steps of the protocol. Each session of data is a row within the data structure.</p>
 <p>Regardless of hardware set up, all extracted files can be loaded with the function <em>LoadKeydata</em>.</p>
@@ -267,14 +267,14 @@
 <li><strong>experimentkey:</strong> Data structure created by the <em>LoadKeys</em> function, containing at least the field <em>ExtractedFolderPath</em> with the full path to each individual session of data to be loaded.</li>
 </ul>
 <p><strong>Code example:</strong>
-<img alt="png" src="../../img/datapreparation_7_loadKeydata.png" /></p>
+<img alt="png" src="../img/datapreparation_7_loadKeydata.png" /></p>
 <h2 id="cropping-the-data">Cropping the Data</h2>
 <p>The final step in data preparation is optional. Photometry recording may start a few seconds before the experiment begins, such as in cases where users have to initiate hardware for operant boxes separately, and after the experiment ends. Additionally, users may want to remove the first few minutes of each session due to the higher rate of photobleaching before the signal stabilizes. </p>
 <p>If desired, data can be cropped with the function <em>cropFPdata</em>, which uses user derived session start and session end indexes to crop data streams and adjust any event epochs (timestamps) to maintain the relationship in time.</p>
 <h3 id="index-preparation">Index Preparation</h3>
 <p>If timestamps for session start and end are included in the raw data collection, then these fields can be used as the cropping start and end points. If not, users must first determine the appropriate start and end points from whatever timestamps are relevant. For example, in the example analysis provided the session is cropped to 15 minutes before the first injection time stamp, and 60 minutes after the second injection time stamp.</p>
 <p><strong>Code example of preparing the start and end indices:</strong>
-<img alt="png" src="../../img/datapreparation_8_preparecropindices.png" /></p>
+<img alt="png" src="../img/datapreparation_8_preparecropindices.png" /></p>
 <h3 id="function-cropfpdata">FUNCTION: <em>cropFPdata</em></h3>
 <p><strong>REQUIRED INPUTS:</strong></p>
 <ul>
