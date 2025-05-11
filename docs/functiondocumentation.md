@@ -235,6 +235,40 @@ end
 [data] = normBaseline(data,'sigfilt','BLstart','BLend');
 ```
 
+## preparestreamFFT
+Helper function to take the FFT of a data stream and output the magnitudes and corresponding frequencies for analysis, plotting, and diagnostics. This function is called by the plot function *plotFFTs* but can also be used to prepare FFTs for each stream of data for all sessions with use in a for loop.
+
+**INPUTS:**
+
+* __STREAMDATA:__ An array containing the values from a single collected data stream.
+* __FS:__ The sampling rate of the data stream.
+
+
+**OUTPUTS:**
+
+* __STREAMFFT:__ An array containing the prepared FFT magnitudes of the input stream.
+* __STREAMF:__ An array containing the corresponding frequencies to the prepared FFT magnitudes in STREAMFFT.
+
+**EXAMPLE OF SINGLE SESSION SIGNAL:**
+```
+[streamFFT,streamF] = preparestreamFFT(data(1).sig,data(eachfile).fs);
+```
+
+**EXAMPLE OF ALL SESSIONS AND STREAMS:**
+```
+%% Prepare FFTs of all streams
+streams = {'sig', 'baq', 'baq_scaled','sigsub', 'sigfilt'};
+
+% Frequency scaled background
+for eachfile = 1:length(data)
+    for eachstream = 1:length(streams)
+        streamname = char(streams(eachstream));
+        [streamFFT,streamF] = preparestreamFFT(data(eachfile).(streamname),data(eachfile).fs);
+        data(eachfile).(append(streamname,'FFT')) = streamFFT;
+        data(eachfile).(append(streamname,'F')) = streamF;
+    end
+end
+```
 
 # Transient Detection and Quantification Functions
 ## findSessionTransients
@@ -554,7 +588,6 @@ plotTraces(data,1,maintitle,'saveoutput',1,'plotfilepath',plotfilepath);
 **EXAMPLE: All Sessions**
 ```
 %% Plot whole session streams for each file
-% Use plotTraces to plot all raw traces - data needs to contain sig, baq, baq_scaled, sigsub, and sigfilt.
 for eachfile = 1:length(data)
     maintitle = append(num2str(data(eachfile).Subject),' - Treatment: ',data(eachfile).InjType); % Create title string for current plot
     alltraces = plotTraces(data,eachfile,maintitle);
@@ -566,6 +599,49 @@ for eachfile = 1:length(data)
 
     set(gcf, 'Units', 'inches', 'Position', [0, 0, 8, 9]);
     plotfilepath = append(figurepath,'SessionTraces_',num2str(data(eachfile).Subject),'_',data(eachfile).InjType,'.png');
+    exportgraphics(gcf,plotfilepath,'Resolution',300)
+end
+```
+
+## plotFFTs
+Main function to plot whole session fiber photometry FFT frequency magnitude plots. This function will plot the streams sig, baq, baq_scaled, sigsub, and sigfilt for a single session. Use this function in a loop to plot streams for all sessions in the data structure. By default, only frequencies up to 20 hz will be plotted but users can specify an optional input to adjust the cutoff lower or higher, or set to the actual max for the stream FFT. To modify the plot or add additional features, use the plot in a loop. Modified plots must be saved in the external loop. If modifications are not neccesaary, then optional inputs can be specified to directly output and save the plot to a filepath location.
+
+**INPUTS:**
+
+* __DATA:__ This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.
+* __WHICHFILE:__ The file number to be plotted.
+* __MAINTITLE:__ The main title (string) to be displayed for the overall plot above the individual tiles. For example, '427 - Treatment: Morphine'
+* __WHICHFS:__ The name (string) of the field that contains the sampling rate of the data streams.
+
+**OPTIONAL INPUTS:**
+
+* __XMAX:__ The desired frequency cutoff for the x axis (hz). Frequencies above this value will be excluded from the plots. To plot all frequencies, set to actual'. _Default: 20_
+* __SAVEOUTPUT:__ Set to 1 to automatically save trace plots as png to the plot file path. _Default: 0_
+* __PLOTFILEPATH:__ Required if SAVEOUTPUT is set to 1. The specific path to save the plot to. Note that this must be the entire path from computer address to folder ending in the filename for the specific plot. For example: 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png'
+
+**OUTPUTS:**
+
+* __ALLFFTS:__ A plot object containing subplots for each input stream.
+
+**EXAMPLE: Single Session**
+```
+%% Plot the first session and automatically save the output
+maintitle = append(num2str(data(1).Subject),' - Treatment: ',data(1).InjType); % Create title string for current plot
+plotfilepath = 'C:\Users\rmdon\Box\Injection Transients\Figures\SessionTraces_427_Morphine.png';  % Create plot file path for the current plot
+
+plotTraces(data,1,maintitle,'fs','saveoutput',1,'plotfilepath',plotfilepath);
+```
+
+
+**EXAMPLE: All Sessions**
+```
+%% Plot stream FFTs for each file
+for eachfile = 1:length(data)
+    maintitle = append(num2str(data(eachfile).Subject),' - Treatment: ',data(eachfile).InjType); % Create title string for current plot
+    allffts = plotFFTs(data,eachfile,maintitle);
+
+    set(gcf, 'Units', 'inches', 'Position', [0, 0, 8, 9]);
+    plotfilepath = append(figurepath,'SessionFFTs_',num2str(data(eachfile).Subject),'_',data(eachfile).InjType,'.png');
     exportgraphics(gcf,plotfilepath,'Resolution',300)
 end
 ```

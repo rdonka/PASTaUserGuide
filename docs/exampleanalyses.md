@@ -26,7 +26,13 @@ Raw, subtracted, and filtered streams for the whole session are visualized and s
 
 ![png](./img/exampleanalyses_1_SessionTraces_427_Morphine.png)
 
+Additionally, frequency magnitude plots of the FFTs of the raw, scaled, subtracted, and filtered streams are generated and saved to the *'Figures'* folder.
+
+![png](./img/exampleanalyses_2_SessionFFTs_427_Morphine.png)
+
+
 After subtraction, the filtered signal is normalized. To normalize to the entire session, the function *normSession* is called, outputting the z scored signal streams to *'sigfiltz_normsession'*. To normalize to pre injection baseline, the function normBaseline is called, which uses the pre-injection period to normalize the entire session, outputting the z scored streams to *'sigfiltz_normsession'*. 
+
 
 Finally, a for loop is used to create streams with the injection time period removed. For details on the signal processing functions and methods, see the user guide section on [Signal Processing](https://rdonka.github.io/PASTaUserGuide/userguide/signalprocessing/).
 
@@ -36,7 +42,7 @@ To identify transient events, the *findSessionTransients* functions are used. Th
 
 After detection, transients are quantified by frequency, amplitude, half height rise time, half height fall time, half height width, and half height AUC. After detection and quantification, transients are binned into 5 minute increments. To do so, the number of samples per bin is identified and added to the data structure. The function *binSessionTransients* identifies and adds the bin of each transient event to the *transientquantificiation* table. Individual bins with identified transients are plotted and figures are saved to the folder.
 
-![png](./img/exampleanalyses_2_SessionBins_blmin_427_Morphine.png)
+![png](./img/exampleanalyses_3_SessionBins_blmin_427_Morphine.png)
 
 To export the transient events for statistical analysis, the table for each file is appended into the table alltransients which is output as a csv to the location specified by analysispath. Relevant experimental variables (subject ID, treatment number, and injection type) are appended to the table.
 
