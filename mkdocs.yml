@@ -1,6 +1,6 @@
 site_name: 'PASTa'
 nav:
-  - index.md 
+  - Home: index.md 
   - Getting Started: gettingstarted.md
   - User Guide: 
     - User Guide: userguide/userguide.md
