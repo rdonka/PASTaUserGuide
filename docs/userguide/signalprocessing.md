@@ -36,7 +36,7 @@ __Background Scaling and Subtraction Method Correlations.__ Samples of scaled ba
 scaling preserves the shape of the background and prevents underscaling relative to other methods.
 
 #### PASTa Background Scaling and Subtraction Options
-The PASTa toolbox subtraction function includes options to use OLS regression, detrending and OLS regression, Lowess Smoothing and OLS Regression, biexponential decay fitting with OLS regression or interquartile range scaling, and IRLS regression to scale the background prior to subtraction. See the [References](ADDURL) page for full citations of publications implementing each of these approaches for more detail.
+The PASTa toolbox subtraction function includes options to use OLS regression, detrending and OLS regression, Lowess Smoothing and OLS Regression, biexponential decay fitting with OLS regression or interquartile range scaling, and IRLS regression to scale the background prior to subtraction. See the [References](https://rdonka.github.io/PASTaUserGuide/about/references/) page for full citations of publications implementing each of these approaches for more detail.
 
 
 ### Filtering Considerations
