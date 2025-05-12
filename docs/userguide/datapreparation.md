@@ -25,9 +25,7 @@ Fiber photometry data collected through the software _Synapse_ (Tucker Davis Tec
 By default, the tank path is: _C:\TDT\Synapse\Tanks_. Synapse recognizes experiments and subjects as key categories of information that play a special role in managing data storage and retrieval. Thus, when running the session, it is critical to ensure the correct Experiment profile is selected, and the correct Subject identifier is input for each session. By default, Synapse names data tanks automatically based on experiment name and the start time of the first recording (e.g., {ExperimentName}-{yymmdd}-{hhmmss}). Blocks of data are named based on subject (e.g., {SubjectName}-{yymmdd}-{hhmmss}) for each recording session and the start time.
 
 Synapse will save a new Tank for every day unless you change the default setting. Click _Menu_ at the top of the bar, then Preferences. Under the _Data Saving_ tab, make sure "New Tank Each Day" is unchecked.
-
 ![png](../img/datapreparation_1_SynapseDataSaving.png)
-
 If data are collected with Synapse (Tucker Davis Technologies), raw block folders can be placed directly in the _Raw Data_ folder. Copy the data blocks output by Synapse for each session into _Raw Data_. If blocks are nested in tanks, we recommend to unnest the blocks for ease of file key creation.
 
 #### Option 2: CSV Format
@@ -55,7 +53,7 @@ _Note: Epochs must be specified as sample number relative to the recorded data s
 
 After prepared individual session folders are created, copy the blocks to the _Raw Data_ folder in the project parent folder.
 
-### Create the subject and file keys
+### Create the Subject and File Keys
 To accomodate a variety of file organization structures, users can first create two csv files containing the information necessary to access raw data, and experimental metadata to match to raw photometry data. MATLAB can access raw data folders stored either locally or in a cloud-based storage app like Box or Dropbox. 
 
 To faciliate analysis, users can create two keys as csv files: a subject key and a file key. In the PASTa protocol, these files will be knit together to pair subject specific information with each individual session of data, preventing the need for manual repeated entry of subject specific information and reduce the time burden of properly maintaining and including experimental metadata factors like subject traits, treatments, and experimental equipment.
@@ -64,10 +62,11 @@ The __subject key__ is a csv file with the experimentally relevant subject metad
 
 The __file key__ is a csv file that lists the names of folders containing data files and the file paths to locate raw data and store extracted data. In the PASTa protocol, the subject key information will be joined to the individual session data to pair subject specific information with each individual recording. The subject key file prevents the need for manual repeated entry of subject specific information, a process that is error-prone. Further, a subject key file reduces the time burden of properly maintaining and including factors like subject traits, treatments, and experimental equipment. At minimum, the subject key must contain the field _“SubjectID”_. Any additional fields can be added as columns in the csv file, and fields can contain any format of data (numeric, string, etc).
 
-#### Create and save the Subject Key
+#### Create and Save the Subject Key
 The subject key should contain information about each subject that is constant and unchanging such as SubjectID, sex, date of birth, fiber location, sensor, experimental group, and any other user specificed information. 
 
 __For example:__
+
 ![png](../img/datapreparation_2_SubjectKeyExample.png)
 
 __1.__ Create a .csv file with a column labeled “SubjectID”. Enter the unique SubjectID for each subject included in the experiment.
@@ -75,7 +74,7 @@ __1.__ Create a .csv file with a column labeled “SubjectID”. Enter the uniqu
 __2.__ Optional but recommended: Add additional columns for relevant metadata, such as _“Sex”_, _“DOB”_, _“FiberPlacement”_, _“FiberSide”_, _“Sensor”_, _“Group”_, or other experimental variables. These fields will be carried forward into the final data structure and are useful for downstream analyses.
 
 
-#### Create and save the File Key
+#### Create and Save the File Key
 In the file key, each row should correspond to one fiber photometry session. For each session, the key must include at least the SubjectID, path to the raw data block, and path to where the extracted MATLAB structure should be saved. All file paths should be specified in the file key without the specific root directory portion of the path. __For example__, a file saved to a specific device at the path _"C:\Users\rmdon\Box\RawData\"_ should be specified as  _"Box\RawData\"_. This facilitates analysis across multiple devices or cloud storage solutions without manual edits to the file key. Ensure the specified path ends in a forward slash.
 
 __1.__ Create a csv file with the columns “SubjectID”, “BlockFolder”, “RawFolderPath”, and “ExtractedFolderPath”.
@@ -112,7 +111,6 @@ Prior to loading and processing fiber photometry data, the MATLAB environment is
 
 __Code example:__
 ![png](../img/datapreparation_4_preparepaths.png)
-
 ### Create the Experiment Key
 Use the _createExperimentKey_ function to create the _experimentkey_ data structure. This function merges the individual subject information from the subject key with the session information from the file key.  It also appends the rootdirectory and folder names from the field _‘Folder’_ to the _‘RawFolderPath’_ and _‘ExtractedFolderPath’_ fields. This creates the full paths for each session. The _experimentkey_ is output as a MATLAB data structure. 
 
@@ -131,14 +129,12 @@ __OUTPUT:__
 __Code example:__
 ![png](../img/datapreparation_5_createExperimentKey.png)
 
-
 ## Extract fiber photometry data
 Extract the fiber photometry data and save the resulting MATLAB structure for each session. One MATLAB structure will be created and saved per session. Saving data in this format facilitates efficient data loading across multiple sessions during downstream analysis. Pre-extracting and saving session-level structures significantly reduces processing time when accessing large datasets or performing batch analyses.
 
 When the raw data is extracted, trimming will be applied by default. By default, this removes the first 5 seconds of the session to remove large fluctuations in output signal that occur when the hardware is turned on and off. The number of seconds trimmed can be adjusted by overriding the default.
 
 ![png](../img/datapreparation_6_trimexample.png)
-
 __Trimming example.__ First 30 seconds of a fiber photometry recording session (Ventral Tegmental Area (VTA) dopamine activity, GCaMP6f), showing __A)__ the raw signal from the 465nm channel and __B)__ the raw background from the 405nm channel. Both panels illustrate the initial large artifact immediately following the start of the recording. To mitigate undesired effects on signal processing, PASTa by default extracts the data and trims the first 5 seconds of each session.
 
 To extract fiber photometry data and save MATLAB structures for each session, two functions are available depending on the hardware used for data collection. 
@@ -172,7 +168,6 @@ _Note: The names of the streams in the raw data blocks are set in the program Sy
 
 __Code example:__
 ![png](../img/datapreparation_7_extractTDTdata.png)
-
 ### Option 2: CSV Format
 For data collected with other systems (e.g., Neurophotometrics, Doric), use the _extractCSVdata_ function to extract and save a MATLAB structure for each session.
 
@@ -204,11 +199,10 @@ __OUTPUT:__
 
 __Code example:__
 ![png](../img/datapreparation_8_extractCSVdata.png)
-
-## Load fiber photometry data into a data structure
+## Load Fiber Photometry Data
 To facilitate the processing of fiber photometry data and transient event detection, the PASTa protocol utilizes MATLAB data structures to organize the inputs and outputs to and from PASTa functions. The prepared data structure should contain each fiber photometry recording session as a row, with all subject and session specific metadata in addition to fiber photometry data streams, sampling rate, and event epochs.
 
-### Load data
+### Load data into a MATLAB structure
 Use the _loadKeydata_ function to load the extracted fiber photometry data for all sessions in the _experimentkey_. This function matches each session in the experiment key to its corresponding extracted MATLAB structure and appends fiber photometry data fields. Regardless of hardware set up and which data extraction function is used, all extracted files can be loaded with the function _loadKeydata_.
 
 __REQUIRED INPUTS:__
@@ -223,12 +217,10 @@ _Note: If desired, users can create and use their own pipeline to organize and l
 
 __Code example:__
 ![png](../img/datapreparation_9_cropFPdata.png)
-
 ### Optional: Crop fiber photometry data
 In cases where fiber photometry recordings begin or end outside the experimentally relevant period – for example, when hardware is manually triggered before or after the behavioral task begins or ends – users may wish to crop the data streams to remove the beginning and end of each session. Additionally, users may wish to exclude the initial portion of the recording session (e.g., the first few minutes), where photobleaching is typically more pronounced and nonlinear before signal stabilization.
 
 ![png](../img/datapreparation_9_cropexample.png)
-
 __Crop data example:__ Fiber photometry (VTA dopamine activity, GCaMP6f) raw __A)__ signal (465nm) and __B)__ background (405nm) data streams each fit with an exponential decay function (red). Both streams show a steeper decay slope in the first two minutes, reflecting an initially faster rate of photobleaching that stabilizes over time. To account for this, the PASTa protocol recommends cropping the data streams to exclude the first two minutes of each session prior to further analysis.
 
 If cropping is desired, users must first prepare the start and end indexes of the range of the data streams to be included. Any samples outside the start and stop indexes will be remove. If event epochs are included in the analysis, users should specify an optional input to adjust the epochs by the crop start index to maintain spatial aligned with data streams.
