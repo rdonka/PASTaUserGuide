@@ -217,10 +217,13 @@ __Normalization examples.__ __A)__ Normalization (Z Score) to whole session mean
 Normalize (Z-score) the subtracted and filtered signal to whole session mean and standard deviation. Use the _normSession_ function to Z-score the subtracted and filtered signal stream.
 
 __REQUIRED INPUTS:__ When calling the function, specify:
+
 - __data:__ The full data structure containing all session data output from the _subtractFPdata_ function.
+
 - __streamfieldname:__ The name of the field containing the stream to be normalized (e.g., _'sigfilt'_).
 
 __OUTPUT:__
+
 - __data:__ The full data structure with the normalized data appended to an additional field. The field name will be specified as the streamfieldname concatenated with 'z_normsession'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normsession'.
 
 ### Option 2: Session Baseline Z-Score
@@ -231,12 +234,17 @@ First, prepare fields in the data structure containing indexes for the desired b
 Use the _normBaseline_ function to Z-score the subtracted and filtered signal stream to the mean and standard deviation of the desired baseline period. 
 
 __REQUIRED INPUTS:__ When calling the function, specify:
+
 - __data:__ The full data structure containing all session data output from the subtractFPdata function.
+
 - __streamfieldname:__ The name of the field containing the stream to be normalized (e.g., _'sigfilt'_).
+
 - __BLstartfieldname:__ The name of the field containing the baseline period start indices for each session.
+
 - __BLendfieldname:__ The name of the field containing the baseline period end indices for each session.
 
 __OUTPUT:__
+
 - __data:__ The full data structure with the normalized data appended to an additional field. The field name will be specified as the streamfieldname concatenated with 'z_normbaseline'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normbaseline'.
 
 ### Option 3: Custom Session Period Z-Score
@@ -247,12 +255,16 @@ Prepare a field in the data structure containing the portions of the stream to b
 Use the _normCustom_ function to Z-score the subtracted and filtered signal stream to the mean and standard deviation of the custom period. 
 
 __REQUIRED INPUTS:__ When calling the function, specify:
+
 - __data:__ The full data structure containing all session data output from the subtractFPdata function.
+
 - __streamfieldname:__ The name of the field containing the stream to be normalized (e.g., 'sigfilt').
+
 - __customstreamfieldname:__ The name of the field containing the custom cut portion of the full stream to be used for the mean and standard deviation in Z-score calculations.
 
 __OUTPUT:__
-- __data:__ The full data structure with the normalized data appended to an additional field. The field name will be specified as the fullstreamfieldname concatenated with 'z_normcustom'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normcustom'.
+
+- __data:__ The full data structure with the normalized data appended to an additional field. The field name will be specified as the fullstreamfieldname concatenated with 'z_normcustom'. For example, if _'sigfilt'_ is the specified stream, the output normalized stream will be named 'sigfiltz_normcustom'.
 
 
 __CODE EXAMPLE:__

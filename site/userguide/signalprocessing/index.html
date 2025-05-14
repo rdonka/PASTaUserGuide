@@ -96,7 +96,7 @@
 </li>
                                     
 <li>
-    <a href="../../references.md" class="dropdown-item">References</a>
+    <a href="../../about/references/" class="dropdown-item">References</a>
 </li>
                                 </ul>
                             </li>
@@ -192,7 +192,7 @@
 <strong>Background Scaling and Subtraction Method Correlations.</strong> Samples of scaled background and subtracted signal across scaling methods and sensors. Overall, correlations indicate that while most methods are similar for GCaMP6f and dLight1.3b, for GRABDA2H frequency
 scaling preserves the shape of the background and prevents underscaling relative to other methods.</p>
 <h4 id="pasta-background-scaling-and-subtraction-options">PASTa Background Scaling and Subtraction Options</h4>
-<p>The PASTa toolbox subtraction function includes options to use OLS regression, detrending and OLS regression, Lowess Smoothing and OLS Regression, biexponential decay fitting with OLS regression or interquartile range scaling, and IRLS regression to scale the background prior to subtraction. See the <a href="ADDURL">References</a> page for full citations of publications implementing each of these approaches for more detail.</p>
+<p>The PASTa toolbox subtraction function includes options to use OLS regression, detrending and OLS regression, Lowess Smoothing and OLS Regression, biexponential decay fitting with OLS regression or interquartile range scaling, and IRLS regression to scale the background prior to subtraction. See the <a href="https://rdonka.github.io/PASTaUserGuide/about/references/">References</a> page for full citations of publications implementing each of these approaches for more detail.</p>
 <h3 id="filtering-considerations">Filtering Considerations</h3>
 <p>In addition to subtraction method, users can adjust filter parameters for the subtracted signal to better isolate the signal components that are of biological interest. By default, PASTa employs a 3rd order bandpass Butterworth filter with a high pass cutoff of 0.0051 Hz and a low pass cutoff of 2.286 Hz. The type and order of the filter were selected to best preserve the integrity of the frequencies of interest in the pass band. The cutoff frequencies were chosen based on the typical temporal dynamics of fluorescent sensors and population-level neural dynamics of interest. We primarily tested these parameters on recordings of GCaMP6f in dopamine (DA) cell bodies in the ventral tegmental area (VTA), and recordings of DA release in the nucleus accumbens (NAc) with GRABDA2H and dLight1.3b. If sensor kinetics or the range of frequencies of biological interest vary significantly from these, users may need to adjust the filtering parameters. Use of the frequency domain plot functions (<em>plotFFTpower</em> and <em>plotFFTmag</em>) may be helpful in visualizing the frequency components of the signal and performance of the filter relative to experimental goals. When performing the subtraction and filtering, filter parameters can be easily adjusted using optional function inputs. </p>
 <p><img alt="png" src="../../img/signalprocessing_5_filtering.png" />
