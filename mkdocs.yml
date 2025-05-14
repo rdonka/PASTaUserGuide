@@ -7,7 +7,6 @@ nav:
     - Data Preparation: userguide/datapreparation.md
     - Signal Processing: userguide/signalprocessing.md
     - Transient Analysis: userguide/transientanalysis.md
-    - Data Visualization: userguide/plotdata.md
   - Function Documentation: functiondocumentation.md
   - Example Analyses: exampleanalyses.md
   - About: 
