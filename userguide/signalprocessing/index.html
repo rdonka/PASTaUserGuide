@@ -363,32 +363,62 @@ However, z-score normalization is not without tradeoffs and can alter the shape 
 <strong>Normalization examples.</strong> <strong>A)</strong> Normalization (Z Score) to whole session mean and SD. <strong>B)</strong>  Normalization (Z Score) to a 3-min session baseline mean and SD.</p>
 <h3 id="option-1-whole-session-z-score">Option 1: Whole Session Z-Score</h3>
 <p>Normalize (Z-score) the subtracted and filtered signal to whole session mean and standard deviation. Use the <em>normSession</em> function to Z-score the subtracted and filtered signal stream.</p>
-<p><strong>REQUIRED INPUTS:</strong> When calling the function, specify:
-- <strong>data:</strong> The full data structure containing all session data output from the <em>subtractFPdata</em> function.
-- <strong>streamfieldname:</strong> The name of the field containing the stream to be normalized (e.g., <em>'sigfilt'</em>).</p>
-<p><strong>OUTPUT:</strong>
-- <strong>data:</strong> The full data structure with the normalized data appended to an additional field. The field name will be specified as the streamfieldname concatenated with 'z_normsession'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normsession'.</p>
+<p><strong>REQUIRED INPUTS:</strong> When calling the function, specify:</p>
+<ul>
+<li>
+<p><strong>data:</strong> The full data structure containing all session data output from the <em>subtractFPdata</em> function.</p>
+</li>
+<li>
+<p><strong>streamfieldname:</strong> The name of the field containing the stream to be normalized (e.g., <em>'sigfilt'</em>).</p>
+</li>
+</ul>
+<p><strong>OUTPUT:</strong></p>
+<ul>
+<li><strong>data:</strong> The full data structure with the normalized data appended to an additional field. The field name will be specified as the streamfieldname concatenated with 'z_normsession'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normsession'.</li>
+</ul>
 <h3 id="option-2-session-baseline-z-score">Option 2: Session Baseline Z-Score</h3>
 <p>Normalize (Z-score) to session baseline mean and standard deviation.</p>
 <p>First, prepare fields in the data structure containing indexes for the desired baseline period start and end points for each session. These indexes should be in sample number.</p>
 <p>Use the <em>normBaseline</em> function to Z-score the subtracted and filtered signal stream to the mean and standard deviation of the desired baseline period. </p>
-<p><strong>REQUIRED INPUTS:</strong> When calling the function, specify:
-- <strong>data:</strong> The full data structure containing all session data output from the subtractFPdata function.
-- <strong>streamfieldname:</strong> The name of the field containing the stream to be normalized (e.g., <em>'sigfilt'</em>).
-- <strong>BLstartfieldname:</strong> The name of the field containing the baseline period start indices for each session.
-- <strong>BLendfieldname:</strong> The name of the field containing the baseline period end indices for each session.</p>
-<p><strong>OUTPUT:</strong>
-- <strong>data:</strong> The full data structure with the normalized data appended to an additional field. The field name will be specified as the streamfieldname concatenated with 'z_normbaseline'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normbaseline'.</p>
+<p><strong>REQUIRED INPUTS:</strong> When calling the function, specify:</p>
+<ul>
+<li>
+<p><strong>data:</strong> The full data structure containing all session data output from the subtractFPdata function.</p>
+</li>
+<li>
+<p><strong>streamfieldname:</strong> The name of the field containing the stream to be normalized (e.g., <em>'sigfilt'</em>).</p>
+</li>
+<li>
+<p><strong>BLstartfieldname:</strong> The name of the field containing the baseline period start indices for each session.</p>
+</li>
+<li>
+<p><strong>BLendfieldname:</strong> The name of the field containing the baseline period end indices for each session.</p>
+</li>
+</ul>
+<p><strong>OUTPUT:</strong></p>
+<ul>
+<li><strong>data:</strong> The full data structure with the normalized data appended to an additional field. The field name will be specified as the streamfieldname concatenated with 'z_normbaseline'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normbaseline'.</li>
+</ul>
 <h3 id="option-3-custom-session-period-z-score">Option 3: Custom Session Period Z-Score</h3>
 <p>Normalize (Z-score) to custom session period mean and standard deviation</p>
 <p>Prepare a field in the data structure containing the portions of the stream to be used for the calculating of the mean and standard deviation for normalization. This could include any portions of the stream desired by the user and should be one combined array. For example, users may want to normalize both pre-trial and post-trial baselines. The pre- and post-trial stream data can be appended to one array and used for normalization of the whole session.</p>
 <p>Use the <em>normCustom</em> function to Z-score the subtracted and filtered signal stream to the mean and standard deviation of the custom period. </p>
-<p><strong>REQUIRED INPUTS:</strong> When calling the function, specify:
-- <strong>data:</strong> The full data structure containing all session data output from the subtractFPdata function.
-- <strong>streamfieldname:</strong> The name of the field containing the stream to be normalized (e.g., 'sigfilt').
-- <strong>customstreamfieldname:</strong> The name of the field containing the custom cut portion of the full stream to be used for the mean and standard deviation in Z-score calculations.</p>
-<p><strong>OUTPUT:</strong>
-- <strong>data:</strong> The full data structure with the normalized data appended to an additional field. The field name will be specified as the fullstreamfieldname concatenated with 'z_normcustom'. For example, if 'sigfilt' is the specified stream, the output normalized stream will be named 'sigfiltz_normcustom'.</p>
+<p><strong>REQUIRED INPUTS:</strong> When calling the function, specify:</p>
+<ul>
+<li>
+<p><strong>data:</strong> The full data structure containing all session data output from the subtractFPdata function.</p>
+</li>
+<li>
+<p><strong>streamfieldname:</strong> The name of the field containing the stream to be normalized (e.g., 'sigfilt').</p>
+</li>
+<li>
+<p><strong>customstreamfieldname:</strong> The name of the field containing the custom cut portion of the full stream to be used for the mean and standard deviation in Z-score calculations.</p>
+</li>
+</ul>
+<p><strong>OUTPUT:</strong></p>
+<ul>
+<li><strong>data:</strong> The full data structure with the normalized data appended to an additional field. The field name will be specified as the fullstreamfieldname concatenated with 'z_normcustom'. For example, if <em>'sigfilt'</em> is the specified stream, the output normalized stream will be named 'sigfiltz_normcustom'.</li>
+</ul>
 <p><strong>CODE EXAMPLE:</strong>
 <img alt="png" src="../../img/signalprocessing_12_normalizationCode.png" /></p>
 <h2 id="plot-normalized-data-streams">Plot Normalized Data Streams</h2>
