@@ -142,18 +142,19 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#set-up-and-installation" class="nav-link">Set Up and Installation</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#github-and-github-desktop" class="nav-link">GitHub and GitHub Desktop</a>
+            <li class="nav-item" data-bs-level="2"><a href="#install-matlab" class="nav-link">Install MATLAB</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#matlab-installation" class="nav-link">MATLAB Installation</a>
+            <li class="nav-item" data-bs-level="2"><a href="#install-pasta" class="nav-link">Install PASTa</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#pasta-toolbox-installation" class="nav-link">PASTa Toolbox Installation</a>
-              <ul class="nav flex-column">
               </ul>
             </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#get-started-with-an-example-analysis" class="nav-link">Get Started with an Example Analysis</a>
+              <ul class="nav flex-column">
               </ul>
             </li>
         </ul>
@@ -164,13 +165,92 @@
 <h1 id="getting-started-with-pasta">Getting Started with PASTa</h1>
 <p>Here you'll find the quick start guide to set up <strong>PASTa</strong> with instructions on installation and basic use of the toolbox. Once your device is set up, move to the <a href="https://rdonka.github.io/PASTaUserGuide/userguide/userguide/">User Guide</a> for detailed documentation on the use of the PASTa Protocol for analysis.</p>
 <h1 id="set-up-and-installation">Set Up and Installation</h1>
-<p>PASTa was developed and primarily tested on Windows. Use in other operating systems may require adaptation of functions and analysis example scripts. For Mac users, we've attempted to integrate additional instructions but some troubleshooting may be required.</p>
-<h2 id="github-and-github-desktop">GitHub and GitHub Desktop</h2>
-<p>Install GitHub Desktop if you haven't already. Make an account on GitHub, note that students get access to premium features for free through the student developer pack once verified. Install GitHub Desktop and set up a location for your repositories on your local computer. For newer users, we recommend making a folder on your desktop called "GitHubRepositories" and cloning all repositories there. This makes it very easy to locate your repositories.</p>
+<p>PASTa is an open-source MATLAB-based toolbox, containing a series of functions to extract, process, and analyze photometry data. Users must first install MATLAB (version 2020a or later) and add the Signal Processing Toolbox add-on. Following MATLAB installation, users can install PASTa three ways: <strong>1)</strong> MATLAB Add-On Explorer, <strong>2)</strong> downloading the PASTa MATLAB toolbox installation file from the PASTa GitHub, or <strong>3)</strong> local installation of the PASTa GitHub repository.</p>
+<h2 id="install-matlab">Install MATLAB</h2>
+<p>First, users must ensure that MATLAB is installed on the local computer used for analysis. The <em>Signal Processing Toolbox</em> is a required dependency of PASTa.</p>
+<p>To install MATLAB, visit the <a href="https://www.mathworks.com/pricing-licensing.html">MathWorks site</a>. Multiple license types are available, including Academic ($275/year) and student ($99/year). For more info, see <a href="https://www.mathworks.com/pricing-licensing.html">MATLAB Pricing</a>. Licensing may also be available through your university.</p>
+<p>After installing MATLAB, ensure the <em>Signal Processing Toolbox</em> is installed as an Add-On. To install the Add-On:</p>
+<ul>
+<li>
+<p>At the top of the MATLAB window, select the <strong>Home</strong> tab</p>
+</li>
+<li>
+<p>Under <strong>Environment</strong>, select <strong>Add-Ons</strong>. Click <em>Get Add-Ons</em></p>
+</li>
+<li>
+<p>In the <strong>Search</strong> bar, search for <em>"Signal Processing Toolbox"</em></p>
+</li>
+<li>
+<p>Install the <em>Signal Processing Toolbox</em> Add-On</p>
+</li>
+</ul>
+<h2 id="install-pasta">Install PASTa</h2>
+<h3 id="1-matlab-add-on-explorer">1) MATLAB Add-On Explorer</h3>
+<p>PASTa installation as a MATLAB toolbox through the MATLAB Add-On Explorer is the recommended method to install the toolbox to ensure MATLAB is set up to properly access the functions. This guarantees version stability and accessible for newer users of MATLAB as functions will be installed and accessed similarly to built-in MATLAB functions. </p>
+<p>To install PASTa through the MATLAB Add-On Explorer:</p>
+<ul>
+<li>
+<p>At the top of the MATLAB window, select the <strong>Home</strong> tab</p>
+</li>
+<li>
+<p>Under <strong>Environment</strong>, select <strong>Add-Ons</strong>. Click <em>Get Add-Ons</em></p>
+</li>
+<li>
+<p>In the <strong>Search</strong> bar, search for <em>"PASTa"</em></p>
+</li>
+<li>
+<p>Install the <em>PASTa</em> toolbox Add-On</p>
+</li>
+</ul>
+<h3 id="2-matlab-toolbox-installation-file-on-github">2) MATLAB Toolbox Installation File on GitHub</h3>
+<p>Installation via the MATLAB toolbox file in the PASTa GitHub is another option and may be necessary for MATLAB users with older versions that are not compatible with the Add-On explorer or are not tied to a current MATLAB license subscription. </p>
+<p>To install PASTa through the MATLAB Toolbox file on GitHub:</p>
+<ul>
+<li>
+<p>Navigate to the PASTa GitHub repository: https://github.com/rdonka/PASTa</p>
+</li>
+<li>
+<p>Download the file <em>"PASTa.mltbx"</em></p>
+</li>
+<li>
+<p>Open the file <em>"PASTa.mltbx"</em>. The toolbox will be automatically installed to MATLAB.</p>
+</li>
+</ul>
+<h3 id="3-clone-the-pasta-github-repository">3) Clone the PASTa GitHub Repository</h3>
+<p>To access PASTa, users can also copy the toolbox functions to a local folder of the user's choice and then add that folder to the MATLAB path. If desired, users can create a local copy of PASTa by cloning the repository via GitHub desktop. The use of GitHub desktop allows users to easily fetch updates to the repository. Installation of PASTa through cloning of the GitHub repository is more dynamic and may facilitate integration of version updates as they are released. New versions of PASTa will continue to include integration of newly developed signal processing methods, bug fixes, and analysis features as they are released.</p>
+<p>To download and use PASTa directly via the GitHub repository:</p>
+<ul>
+<li>
+<p>Download <strong>GitHub</strong> and <strong>GitHub Desktop</strong>.</p>
+<ul>
+<li>For detailed instructions on GitHub setup, see https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/setting-up-github-desktop</li>
+</ul>
+</li>
+<li>
+<p>Clone the PASTa repository.</p>
+<ul>
+<li>
+<p>To make it easy to locate repositories, we recommend making a folder on your desktop called "GitHubRepositories" and cloning all repositories there. </p>
+</li>
+<li>
+<p>For detailed instructions on cloning repositories, see https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Add the path to the cloned PASTa repository to MATLAB at the start of each analysis session.</p>
+<ul>
+<li>For instructions to add folders to the search path, see https://www.mathworks.com/help/matlab/ref/addpath.html</li>
+</ul>
+</li>
+</ul>
+<p><em>Note: The file</em> main_ExampleAnalysis_Transients.m <em>in the Example Analyses folder serves as a template for the main script to run functions described in the protocol. An example of adding the cloned PASTa repository folder to path is included at the beginning of the script.</em></p>
 <p>For an overview of how to use GitHub and best practices: https://www.freecodecamp.org/news/introduction-to-git-and-github/</p>
-<h2 id="matlab-installation">MATLAB Installation</h2>
-<p>Install MATLAB to you computer, including the simulink suite. Functions have been tested and confirmed with MATLAB 2022, 2023, and 2024 releases.</p>
-<h2 id="pasta-toolbox-installation">PASTa Toolbox Installation</h2></div>
+<h1 id="get-started-with-an-example-analysis">Get Started with an Example Analysis</h1>
+<p>To help users get started with PASTa, the repository includes a full example analysis. The example includes all stages of the pipeline from data preparation through signal processing and transient event detection and analysis. For full details, see the <a href="https://rdonka.github.io/PASTaUserGuide/exampleanalyses/">Example Analyses</a> page.</p>
+<p>For users unfamiliar with MATLAB, we have compiled some helpful introductory resources on the <a href="https://rdonka.github.io/PASTaUserGuide/learningresources/">Learning Resources</a> page.</p>
+<p>Please feel free to reach out with questions, feedback, and feature requests. PASTa is actively maintained, and will continue to integrate new features into future versions. Version releases will be continually added to GitHub, and details are also available on the <a href="https://rdonka.github.io/PASTaUserGuide/about/releasenotes/">Version Release Notes</a> page.</p>
+<p>To facilitate community discussion, we are actively maintaining the <a href="https://github.com/rdonka/PASTa/discussions">Discussions Forum</a> via GitHub, which includes channels for announcements, feature requests, troubleshooting, and general discussions. Our individual contact information is also available <a href="https://rdonka.github.io/PASTaUserGuide/contactus/">here</a>.</p></div>
             </div>
         </div>
 
