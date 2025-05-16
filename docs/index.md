@@ -28,4 +28,7 @@ For using and troubleshooting individual functions, the [Function Documentation]
 ### Example Analyses
 Additionally, to provide an example of the full pipeline, the [Example Analyses](https://rdonka.github.io/PASTaUserGuide/exampleanalyses/) page provides users with full examples of experimental analyses. All files needed to perform the example analyses are available for download so users can walk through each step in MATLAB on their own devices to ensure that installation and set up were sucessful, and view outputs of a validated script.
 
-Please feel free to reach out with questions, additional functionality requests, and other thoughts! Our contact information is provided [here](https://rdonka.github.io/PASTaUserGuide/contactus/).
+# Contact Us!
+Please feel free to reach out with questions, feedback, and feature requests. PASTa is actively maintained, and will continue to integrate new features into future versions. Version releases will be continually added to GitHub, and details are also available on the [Version Release Notes](https://rdonka.github.io/PASTaUserGuide/about/releasenotes/) page.
+
+To facilitate community discussion, we are actively maintaining the [Discussions Forum](https://github.com/rdonka/PASTa/discussions) via GitHub, which includes channels for announcements, feature requests, troubleshooting, and general discussions. Our individual contact information is also available [here](https://rdonka.github.io/PASTaUserGuide/contactus/).

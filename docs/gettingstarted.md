@@ -72,8 +72,10 @@ For an overview of how to use GitHub and best practices: https://www.freecodecam
 # Get Started with an Example Analysis
 To help users get started with PASTa, the repository includes a full example analysis. The example includes all stages of the pipeline from data preparation through signal processing and transient event detection and analysis. For full details, see the [Example Analyses](https://rdonka.github.io/PASTaUserGuide/exampleanalyses/) page.
 
+# Learning Resources
 For users unfamiliar with MATLAB, we have compiled some helpful introductory resources on the [Learning Resources](https://rdonka.github.io/PASTaUserGuide/learningresources/) page.
 
+# Contact Us!
 Please feel free to reach out with questions, feedback, and feature requests. PASTa is actively maintained, and will continue to integrate new features into future versions. Version releases will be continually added to GitHub, and details are also available on the [Version Release Notes](https://rdonka.github.io/PASTaUserGuide/about/releasenotes/) page.
 
 To facilitate community discussion, we are actively maintaining the [Discussions Forum](https://github.com/rdonka/PASTa/discussions) via GitHub, which includes channels for announcements, feature requests, troubleshooting, and general discussions. Our individual contact information is also available [here](https://rdonka.github.io/PASTaUserGuide/contactus/).
