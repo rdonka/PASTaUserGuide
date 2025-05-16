@@ -6,7 +6,7 @@ For specific function troubleshooting, see the [Function Documentation](https://
 ## Quick Links
 PASTa includes protocols for all stages of fiber photometry analysis. Here are quick links to access each section of the user guide:
 
-![png](./img/home_2_PASTaprotocoloverview.png)
+![png](../img/home_2_PASTaprotocoloverview.png)
 
 [__Data Preparation__](https://rdonka.github.io/PASTaUserGuide/userguide/datapreparation/): Data organization, metadata preparation, fiber photometry data extraction, loading data into MATLAB, and cropping of fiber photometry streams.
 
