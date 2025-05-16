@@ -30,9 +30,15 @@ To install PASTa through the MATLAB Add-On Explorer:
 
 - Under __Environment__, select __Add-Ons__. Click _Get Add-Ons_
 
+![png](./img/gettingstarted_2_AddOnExplorer.png)
+
 - In the __Search__ bar, search for _"PASTa"_
 
 - Install the _PASTa_ toolbox Add-On
+
+![png](./img/gettingstarted_3_AddOnExplorerPASTa.png)
+
+
 
 ### 2) MATLAB Toolbox Installation File on GitHub
 Installation via the MATLAB toolbox file in the PASTa GitHub is another option and may be necessary for MATLAB users with older versions that are not compatible with the Add-On explorer or are not tied to a current MATLAB license subscription. 
@@ -44,6 +50,8 @@ To install PASTa through the MATLAB Toolbox file on GitHub:
 - Download the file _"PASTa.mltbx"_
 
 - Open the file _"PASTa.mltbx"_. The toolbox will be automatically installed to MATLAB.
+
+![png](./img/gettingstarted_4_mltbxPASTa.png)
 
 ### 3) Clone the PASTa GitHub Repository
 To access PASTa, users can also copy the toolbox functions to a local folder of the user's choice and then add that folder to the MATLAB path. If desired, users can create a local copy of PASTa by cloning the repository via GitHub desktop. The use of GitHub desktop allows users to easily fetch updates to the repository. Installation of PASTa through cloning of the GitHub repository is more dynamic and may facilitate integration of version updates as they are released. New versions of PASTa will continue to include integration of newly developed signal processing methods, bug fixes, and analysis features as they are released.
