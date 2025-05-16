@@ -21,7 +21,7 @@ After installing MATLAB, ensure the _Signal Processing Toolbox_ is installed as 
 
 ## Install PASTa
 
-### 1) MATLAB Add-On Explorer
+### Option 1: MATLAB Add-On Explorer
 PASTa installation as a MATLAB toolbox through the MATLAB Add-On Explorer is the recommended method to install the toolbox to ensure MATLAB is set up to properly access the functions. This guarantees version stability and accessible for newer users of MATLAB as functions will be installed and accessed similarly to built-in MATLAB functions. 
 
 To install PASTa through the MATLAB Add-On Explorer:
@@ -39,8 +39,7 @@ To install PASTa through the MATLAB Add-On Explorer:
 ![png](./img/gettingstarted_3_AddOnExplorerPASTa.png)
 
 
-
-### 2) MATLAB Toolbox Installation File on GitHub
+### Option 2: MATLAB Toolbox Installation File on GitHub
 Installation via the MATLAB toolbox file in the PASTa GitHub is another option and may be necessary for MATLAB users with older versions that are not compatible with the Add-On explorer or are not tied to a current MATLAB license subscription. 
 
 To install PASTa through the MATLAB Toolbox file on GitHub:
@@ -53,7 +52,7 @@ To install PASTa through the MATLAB Toolbox file on GitHub:
 
 ![png](./img/gettingstarted_4_mltbxPASTa.png)
 
-### 3) Clone the PASTa GitHub Repository
+### Option 3: Clone the PASTa GitHub Repository
 To access PASTa, users can also copy the toolbox functions to a local folder of the user's choice and then add that folder to the MATLAB path. If desired, users can create a local copy of PASTa by cloning the repository via GitHub desktop. The use of GitHub desktop allows users to easily fetch updates to the repository. Installation of PASTa through cloning of the GitHub repository is more dynamic and may facilitate integration of version updates as they are released. New versions of PASTa will continue to include integration of newly developed signal processing methods, bug fixes, and analysis features as they are released.
 
 To download and use PASTa directly via the GitHub repository:
