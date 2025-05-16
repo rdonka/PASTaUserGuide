@@ -19,8 +19,8 @@ nav:
   - Learning Resources: learningresources.md
 
 plugins:
-  - social
-  
+  - material/social
+
 theme:
   name: mkdocs
   features:
