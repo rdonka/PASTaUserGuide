@@ -44,7 +44,7 @@ Installation via the MATLAB toolbox file in the PASTa GitHub is another option a
 
 To install PASTa through the MATLAB Toolbox file on GitHub:
 
-- Navigate to the PASTa GitHub repository: https://github.com/rdonka/PASTa
+- Navigate to the PASTa GitHub repository: <https://github.com/rdonka/PASTa>
 
 - Download the file _"PASTa.mltbx"_
 
@@ -59,22 +59,22 @@ To download and use PASTa directly via the GitHub repository:
 
 - Download __GitHub__ and __GitHub Desktop__.
 
-    - For detailed instructions on GitHub setup, see https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/setting-up-github-desktop
+    - For detailed instructions on GitHub setup, see <https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/setting-up-github-desktop>
 
 - Clone the PASTa repository.
 
     - To make it easy to locate repositories, we recommend making a folder on your desktop called "GitHubRepositories" and cloning all repositories there. 
 
-    - For detailed instructions on cloning repositories, see https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository
+    - For detailed instructions on cloning repositories, see <https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository>
 
 - Add the path to the cloned PASTa repository to MATLAB at the start of each analysis session.
 
-    - For instructions to add folders to the search path, see https://www.mathworks.com/help/matlab/ref/addpath.html
+    - For instructions to add folders to the search path, see <https://www.mathworks.com/help/matlab/ref/addpath.html>
 
 
 _Note: The file_ main_ExampleAnalysis_Transients.m _in the Example Analyses folder serves as a template for the main script to run functions described in the protocol. An example of adding the cloned PASTa repository folder to path is included at the beginning of the script._
 
-For an overview of how to use GitHub and best practices: https://www.freecodecamp.org/news/introduction-to-git-and-github/
+For an overview of how to use GitHub and best practices: <https://www.freecodecamp.org/news/introduction-to-git-and-github/>
 
 # Get Started with an Example Analysis
 To help users get started with PASTa, the repository includes a full example analysis. The example includes all stages of the pipeline from data preparation through signal processing and transient event detection and analysis. For full details, see the [Example Analyses](https://rdonka.github.io/PASTaUserGuide/exampleanalyses/) page.
