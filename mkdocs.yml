@@ -18,4 +18,11 @@ nav:
     - References: about/references.md
   - Learning Resources: learningresources.md
 
-repo_url: https://github.com/rdonka/PASTa/
+theme:
+  features:
+    - navigation.footer
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/rdonka/PASTa
