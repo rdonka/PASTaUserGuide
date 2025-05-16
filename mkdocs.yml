@@ -18,6 +18,9 @@ nav:
     - References: about/references.md
   - Learning Resources: learningresources.md
 
+plugins:
+  - social
+  
 theme:
   name: mkdocs
   features:
