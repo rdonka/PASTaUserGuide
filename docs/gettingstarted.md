@@ -82,6 +82,15 @@ To help users get started with PASTa, the repository includes a full example ana
 ## Learning Resources
 For users unfamiliar with MATLAB, we have compiled some helpful introductory resources on the [Learning Resources](https://rdonka.github.io/PASTaUserGuide/learningresources/) page.
 
+## Time Considerations
+The initial installation of PASTa is easy and quick when done through the MATLAB Add-On Explorer, or via the packaged toolbox file included in the PASTa GitHub repository. This is recommended for users less familiar with MATLAB or GitHub. For users who are comfortable with GitHub and GitHub Desktop, cloning the repository is straightforward. For newer users seeking to access the toolbox by cloning the GitHub repository, expect a few hours to get acquainted with both GitHub and the addition of the toolbox to MATLAB.
+
+Data preparation time for initial users of PASTa will vary depending on existing data organization practices. While we recommend a specific data organization structure for initial users of PASTa (Basic Protocol 2), PASTa functions are written to be flexible to alternative data organization practices. Allot 2 hours for the data organization process.
+
+Once data organization is complete, the remaining protocols should take limited time to apply if using PASTa default options. A full example of an analysis from data organization to signal processing and transient detection is included in the repository. Adapting the example analysis to the user’s experiment will typically take approximately 1-2 hours. Allot additional time if the user is new to MATLAB, or if experimental design requires more custom modifications. 
+
+Together, we anticipate that a new user of PASTa should be able to complete all protocols within approximately 4-5 hours. After initial set up, running the full pipeline including data extraction, signal processing, transient detection and analysis, and plot generation typically takes approximately 1 minute for each fiber photometry session.
+
 ## Contact Us
 Please feel free to reach out with questions, feedback, and feature requests. PASTa is actively maintained, and will continue to integrate new features into future versions. Version releases will be continually added to GitHub, and details are also available on the [Version Release Notes](https://rdonka.github.io/PASTaUserGuide/about/releasenotes/) page.
 

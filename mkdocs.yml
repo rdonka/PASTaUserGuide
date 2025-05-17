@@ -7,8 +7,8 @@ nav:
     - Data Preparation: userguide/datapreparation.md
     - Signal Processing: userguide/signalprocessing.md
     - Transient Analysis: userguide/transientanalysis.md
-  - Function Documentation: functiondocumentation.md
   - Example Analyses: exampleanalyses.md
+  - Function Documentation: functiondocumentation.md
   - About: 
     - PASTa Team: about/pastateam.md
     - Version Release Notes: about/releasenotes.md
@@ -16,7 +16,7 @@ nav:
     - License: about/license.md
     - Contact Us: contactus.md
     - References: about/references.md
-  - Learning Resources: learningresources.md
+  - Resources: learningresources.md
 
 theme:
   name: mkdocs
