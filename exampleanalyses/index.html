@@ -62,10 +62,10 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a href="../functiondocumentation/" class="nav-link">Function Documentation</a>
+                                <a href="./" class="nav-link active" aria-current="page">Example Analyses</a>
                             </li>
                             <li class="nav-item">
-                                <a href="./" class="nav-link active" aria-current="page">Example Analyses</a>
+                                <a href="../functiondocumentation/" class="nav-link">Function Documentation</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">About</a>
@@ -97,7 +97,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a href="../learningresources/" class="nav-link">Learning Resources</a>
+                                <a href="../learningresources/" class="nav-link">Resources</a>
                             </li>
                         </ul>
 
@@ -108,12 +108,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../functiondocumentation/" class="nav-link">
+                                <a rel="prev" href="../userguide/transientanalysis/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../about/pastateam/" class="nav-link">
+                                <a rel="next" href="../functiondocumentation/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -135,21 +135,21 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#injection-transients" class="nav-link">Injection Transients</a>
+            <li class="nav-item" data-bs-level="1"><a href="#example-analysis-injection-transients" class="nav-link">Example Analysis: Injection Transients</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#data-summary" class="nav-link">Data Summary</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#data-preparation" class="nav-link">Data Preparation</a>
+            <li class="nav-item" data-bs-level="2"><a href="#methods" class="nav-link">Methods</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#signal-processing" class="nav-link">Signal Processing</a>
+            <li class="nav-item" data-bs-level="2"><a href="#analysis-script" class="nav-link">Analysis Script</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#transient-detection" class="nav-link">Transient Detection</a>
+            <li class="nav-item" data-bs-level="2"><a href="#results" class="nav-link">Results</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -160,31 +160,59 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<p>To help users get started with the PASTa Protocol, here some example analyses are included with raw data to walk users through each step of the process.</p>
-<h1 id="injection-transients">Injection Transients</h1>
-<p>This example is of whole session transient analysis to determine changes in dopaminergic cell body GCaMP6f transients following morphine injection. The example analysis script is located in the PASTa repository under 'Example Analyses\main_ExampleAnalysis_Transients.m'.</p>
-<h2 id="data-summary">Data Summary</h2>
-<p>Example data are provided from two subjects. Each subject has two fiber photometry sessions conducted on consecutive days: saline and morphine (10mg/kg). Each session consists of a fifteen minute baseline, an i.p. injection, and a 60 minute post-injection recording period. Fiber photometry data were recorded using Tucker Davis Technologies RZ5 processor, with a 465nm excitation wavelength ('signal') and a 405nm isosbestic control wavelength ('background'). Injection start and end time points are marked by epocs sent through Med Associates equipment and stored by Synapse as time stamps. </p>
-<p>Data are available for download from <a href="https://uofi.box.com/s/pqpa8286yi6oia1ocjts7qytb1wetgpv">Box</a> under <em>Example Analyses</em>. The subfolder <em>Injection Transients</em> is prepared for the analysis, containing the file and subject keys, as well as folders created for extracted data, analysis, and figure outputs. Raw data blocks collected via Synapse (Tucker Davis Technologies) are nested in the Raw Data folder.</p>
-<p><strong>NOTE FOR MAC USERS:</strong> A Mac compatible version of the file key is included in the <em>Example Analyses</em> folder. In your main analysis script, make sure to update the file name to <em>'FileKey_ExampleAnalysis_MorphineTransients_MAC.csv'</em>.</p>
+<h1 id="example-analysis-injection-transients">Example Analysis: Injection Transients</h1>
+<p>PASTa includes an example analysis with fiber photometry recordings to help users get comfortable with the workflow and observe the effects of each stage of processing on the signal. The analysis script is available on GitHub, and the data are freely accessible on (Box)[https://uofi.app.box.com/s/pqpa8286yi6oia1ocjts7qytb1wetgpv/folder/256973884209] at <a href="https://uofi.app.box.com/s/pqpa8286yi6oia1ocjts7qytb1wetgpv/folder/256973884209">https://uofi.app.box.com/s/pqpa8286yi6oia1ocjts7qytb1wetgpv/folder/256973884209</a> under <em>Example Analyses</em>. The subfolder <em>Injection Transients</em> is prepared for the analysis, containing the file and subject keys, as well as folders created for extracted data, analysis, and figure outputs. Raw data blocks collected via Synapse (Tucker Davis Technologies) are nested in the Raw Data folder.The completed analysis output files including extracted data structures, transient quantification, and plots are also available for download.</p>
 <p>If you have any questions or run into problems accessing the files, please feel free to <a href="https://rdonka.github.io/PASTaUserGuide/contactus/">contact us</a>.</p>
-<h2 id="data-preparation">Data Preparation</h2>
-<p>The first section of the script sets up paths and analysis key inputs. To enable users to switch computers easily, paths are created without the computer and user specific portion. The computer user specific portion of the path is input to the variable computeruserpath and appended to subsequently needed paths. To access files and functions, paths need to be added to MATLAB via the <em>addpath</em> function. <em>genpath</em> is used within addpath to ensure folders and subfolders at the input path are added. Finally, the names of created Subject and File Keys are added to variables <em>subjectkeyname</em> and <em>filekeyname</em>. These keys contain the session specific and subject specific information needed to load the data and analyze the results. For details on keys, see the user guide section on <a href="https://rdonka.github.io/PASTaUserGuide/userguide/datapreparation/">Data Preparation</a>.</p>
-<p>The keys are loaded using the function <em>loadKeys</em> to join the subject specific data to the session specific information contained in the file key. Paths to raw data blocks and extracted output locations are added to string arrays, which are input to the function <em>extractTDTdata</em>. <em>extractTDTdata</em> first extracts the raw data for each file into a data structure, then saves the MATLAB data structure to extracted output location. Extracted structures for each file are then loaded by the function <em>loadKeydata</em>. </p>
+<h2 id="methods">Methods</h2>
+<h3 id="overview">Overview</h3>
+<p>Example data are provided from two subjects. Each subject has two fiber photometry sessions conducted on consecutive days: saline and morphine (10mg/kg). Each session consists of a fifteen minute baseline, an intraperitoneal injection, and a 60 minute post-injection recording period. Fiber photometry data were recorded using Tucker Davis Technologies RZ10X processor, with a 465nm excitation wavelength (signal; <em>'sig'</em>) and a 405nm isosbestic control wavelength (background, <em>'baq'</em>). Injection start and end time points are marked by epochs (<em>'injt'</em>) sent through Med Associates equipment and stored by Synapse as time stamps. </p>
+<h3 id="animals">Animals</h3>
+<p>Adult male and female Long Evans rats (n = 2) expressing Cre recombinase under the control of the tyrosine hydroxylase promoter (TH:Cre+; [34]) were paired housed within a temperature and humidity-controlled vivarium on a 12:12 hour light-dark cycle with lights on at 7:00 am and maintained on ad libitum food and water for the direction of all experiments. All procedures were conducted in accordance with guidelines set by the National Institutes for Health Guide for the Care and Use of Laboratory Animals and approved by the Animal Care Committee of the University of Illinois Chicago. Recordings were conducted during the light portion of the cycle.</p>
+<h3 id="stereotaxic-surgery-procedures">Stereotaxic Surgery Procedures</h3>
+<p>Rats were anesthetized via isoflurane (induction: 4%; maintenance: ~2%) and injected with meloxicam (1mg/kg, subcutaneous) prior to the start of stereotaxic surgery. To isolate and record from dopamine neuronal cell bodies, AAV1.hSyn.Flex.GCaMP6f.WPRE.SV40 was targeted to the VTA (Anterior/Posterior (AP): - 5.40mm, Medial/Lateral (ML): +0.70mm, Dorsal/Ventral (DV): -8.15mm, relative to Bregma) of TH:Cre+ rats. Viral injections were performed with a volume of 1μL at a rate of 0.1μL/minute with a blunt 30-gauge injection needle mated to a Hamilton syringe via PEEK tubing and connected to a syringe pump. A 5 minute post-injection period followed to ensure complete virus diffusion. An optic fiber (flat 400-μm core, 0.48 NA, Doric Lenses, Inc.) was implanted above the injection site and secured to three implanted skull screws via metabond and dental cement.</p>
+<h3 id="fiber-photometry-data-collection">Fiber Photometry Data Collection</h3>
+<p>Fiber photometry recordings were performed as in Konanur et al 2020, Hsu et al 2020, and Konanur et al 2024, and Loh et al 2025 [35-38]. Data were collected using data acquisition systems from Tucker Davis Technologies (RZ10X). Implanted fiber optic cannulae of subjects were mated to a patch cord, which was connected through a commutator to a filter cube (FMC4, Doric Lenses). Emitted fluorescence was collected by an external photoreceiver (Visible Femtowatt Photoreceiver Model 2151; Newport) and passed to the data acquisition system for live visualization and recording. LEDs administered 465nm and 405nm wavelengths at a total power output of 30μW. Light was sinusoidally modulated at 211 and 531 Hz respectively. Lock in amplification was used to demodulate the fluorescence by emission wavelength.</p>
+<p>Fiber photometry recording sessions were conducted on consecutive days, with the first session consisting of a control saline treatment (1mL/kg, intraperitoneal (i.p.); figure panel A) and the second session consisting of acute morphine treatment (10mg/kg morphine sulfate, i.p.; figure panel B). Each test session consisted of a 15 minute pre-injection baseline, followed by a 60-minute post-injection recording period. Signal processing was performed with PASTa protocol defaults. Subtracted and filtered data streams were normalized to z-score based on the pre-injection baseline period. Transient events were detected at a threshold of 2.6 SDs using PASTa protocol default parameters.</p>
+<h2 id="analysis-script">Analysis Script</h2>
+<p>The full analysis script is available via the (PASTa GitHub)[https://github.com/rdonka/PASTa] under the subfolder <em>"Example Analyses"</em>. Download the file "main_ExampleAnalysis_InjectionTransients.m".</p>
+<h3 id="data-preparation">Data Preparation</h3>
+<p>The first section of the script sets up paths and analysis key inputs. To enable users to switch computers easily, paths are created without the computer and user specific portion. The computer user specific root directory of the path is input to the variable <em>rootdirectory</em> and appended to subsequently needed paths. </p>
+<p>For users accessing PASTa via cloning the repository, to access files and functions, paths need to be added to MATLAB via the <em>addpath</em> function. <em>genpath</em> is used within addpath to ensure folders and subfolders at the input path are added. Finally, the names of created Subject and File Keys are added to variables <em>subjectkeyname</em> and <em>filekeyname</em>. These keys contain the session specific and subject specific information needed to load the data and analyze the results. For details on keys, see the user guide section on <a href="https://rdonka.github.io/PASTaUserGuide/userguide/datapreparation/">Data Preparation</a>.</p>
+<p>The keys are loaded using the function <em>createExperimentKey</em> to join the subject specific data to the session specific information contained in the file key. Paths to raw data blocks and extracted output locations are added to string arrays, which are input to the function <em>extractTDTdata</em>. <em>extractTDTdata</em> first extracts the raw data for each file into a data structure, trims the first 5 seconds of the recording, and then saves the MATLAB data structure to extracted output location. Extracted structures for each file are then loaded by the function <em>loadKeydata</em>. </p>
 <p>After data are loaded, excess samples before the start of the program and after the end of the post-injection period are cropped from the streams. First, session  start and end indices are prepared for each file. These indices are input to the function <em>cropFPdata</em>, which removes the excess samples from the signal and background streams, and adjusts the injection and session start time stamp epocs.</p>
-<h2 id="signal-processing">Signal Processing</h2>
-<p>To control for motion artifacts and photobleaching, the 405 nm channel (baq) is subtracted from the 465 nm channel (sig) with the function <em>subtractFPdata</em>. First, this function scales the background stream to the signal stream. After scaling, the background is subtracted from the signal in the time domain, and filtered with a Butterworth bandpass filter to remove the DC offset as well as high frequency noise (frequencies outside the range of biological interest). The scaling factor (<em>'baqscalingfactor'</em>), subtracted signal (<em>'sigsub'</em>), filtered signal (<em>'sigfilt'</em>) are added to the data structure.</p>
+<h3 id="signal-processing">Signal Processing</h3>
+<p>To control for motion artifacts and photobleaching, the 405 nm channel (<em>'baq'</em>) is subtracted from the 465 nm channel (<em>'sig'</em>) with the function <em>subtractFPdata</em>. The example analysis script uses the default <em>'frequency'</em> scaling method (see the user guide section (Signal Processing)[https://rdonka.github.io/PASTaUserGuide/userguide/signalprocessing/] for full details and alternative scaling options). </p>
+<p>First, <em>subtractFPdata</em> scales the background stream to the signal stream. After scaling, the background is subtracted from the signal in the time domain, and filtered with a Butterworth bandpass filter to remove the DC offset as well as high frequency noise (frequencies outside the range of biological interest). The scaling factor (<em>'baqscalingfactor'</em>), subtracted signal (<em>'sigsub'</em>), filtered signal (<em>'sigfilt'</em>) are added to the data structure.</p>
 <p>Raw, subtracted, and filtered streams for the whole session are visualized and saved to the output folder <em>'Figures'</em>.</p>
-<p><img alt="png" src="../img/exampleanalyses_1_SessionTraces_427_Morphine.png" /></p>
+<p><img alt="png" src="../img/exampleanalyses_1_SessionTraces_1_Saline.png" /></p>
 <p>Additionally, frequency magnitude plots of the FFTs of the raw, scaled, subtracted, and filtered streams are generated and saved to the <em>'Figures'</em> folder.</p>
-<p><img alt="png" src="../img/exampleanalyses_2_SessionFFTs_427_Morphine.png" /></p>
-<p>After subtraction, the filtered signal is normalized. To normalize to the entire session, the function <em>normSession</em> is called, outputting the z scored signal streams to <em>'sigfiltz_normsession'</em>. To normalize to pre injection baseline, the function normBaseline is called, which uses the pre-injection period to normalize the entire session, outputting the z scored streams to <em>'sigfiltz_normsession'</em>. </p>
+<p><img alt="png" src="../img/exampleanalyses_2_SessionFFTs_2_Saline.png" /></p>
+<h3 id="normalization">Normalization</h3>
+<p>After subtraction, the filtered signal is normalized. To normalize to the entire session, the function <em>normSession</em> is called, outputting the z scored signal streams to <em>'sigfiltz_normsession'</em>. To normalize to pre injection baseline, the function <em>normBaseline</em> is called, which uses the pre-injection period to normalize the entire session, outputting the z scored streams to <em>'sigfiltz_normbaseline'</em>. </p>
 <p>Finally, a for loop is used to create streams with the injection time period removed. For details on the signal processing functions and methods, see the user guide section on <a href="https://rdonka.github.io/PASTaUserGuide/userguide/signalprocessing/">Signal Processing</a>.</p>
-<h2 id="transient-detection">Transient Detection</h2>
-<p>To identify transient events, the <em>findSessionTransients</em> functions are used. These functions detect relevant transients in the normalized data stream based on an amplitude inclusiong criterion (eg, 3SD amplitude) relative to baseline. Multiple baseline options exist - see function documentation for <em>findSessionTransients_blmean</em>, <em>findSessionTransients_blmin</em>, and <em>findSessionTransients_localmin</em> for more specific details. </p>
-<p>After detection, transients are quantified by frequency, amplitude, half height rise time, half height fall time, half height width, and half height AUC. After detection and quantification, transients are binned into 5 minute increments. To do so, the number of samples per bin is identified and added to the data structure. The function <em>binSessionTransients</em> identifies and adds the bin of each transient event to the <em>transientquantificiation</em> table. Individual bins with identified transients are plotted and figures are saved to the folder.</p>
-<p><img alt="png" src="../img/exampleanalyses_3_SessionBins_blmin_427_Morphine.png" /></p>
-<p>To export the transient events for statistical analysis, the table for each file is appended into the table alltransients which is output as a csv to the location specified by analysispath. Relevant experimental variables (subject ID, treatment number, and injection type) are appended to the table.</p></div>
+<p><img alt="png" src="../img/exampleanalyses_3_Normalization_2_Saline.png" /></p>
+<h3 id="transient-detection">Transient Detection</h3>
+<p>To identify transient events, the <em>findTransients</em> function is used. This function detects relevant transients in the normalized data stream based on an amplitude inclusion criterion (eg, 2.6 SD) relative to the pre-event baseline. The example analysis uses the default pre-event baseline type (baseline window mean; <em>'blmean'</em>) and baseline window parameters. See the user guide section (Transient Analysis)[https://rdonka.github.io/PASTaUserGuide/userguide/transientanalysis/] for more details and optional input parameters. Transient events are output to a separate data structure to facilitate analysis.</p>
+<p>After detection, transients are quantified by frequency, amplitude, half height rise time, half height fall time, half height width, and half height AUC. After detection and quantification, transients are binned into 5 minute (default) increments. The function <em>binTransients</em> identifies and adds the bin of each transient event to the <em>transientquantificiation</em> table. </p>
+<p>Multiple plots are generated to visualize transient events and figures are saved to the <em>Figures</em> folder.</p>
+<p>Whole session trace with all transient events:
+<img alt="png" src="../img/exampleanalyses_4_SessionTransients_2_Saline.png" /></p>
+<p>Individual bin traces with identified transients:
+<img alt="png" src="../img/exampleanalyses_5_SessionBinTransients_2_Saline.png" /></p>
+<p>Overlaid Transient Traces from the Whole Session:
+<img alt="png" src="../img/exampleanalyses_6_SessionTransientsTraces.png" /></p>
+<p>Overlaid Transient Traces by Bin:
+<img alt="png" src="../img/exampleanalyses_7_BinTransientsTraces_2_Saline.png" /></p>
+<p>To export the transient events for statistical analysis, the <em>summarizeTransients</em> and <em>summarizeBinTransients</em> functions are used to generate the session means of transient event quantification parameters.</p>
+<h2 id="results">Results</h2>
+<p>Overall, morphine administration significantly increased the frequency (figure panel C) and amplitude (figure panel E) of VTA DA activity transients relative to the saline control session. The increase in transient frequency and amplitude was observed approximately 10 minutes post-injection (figure panels D and F), and remained elevated relative to both pre-injection baseline and the matched saline control session through the end of the 60-minute post-injection recording.</p>
+<p><img alt="png" src="../img/exampleanalyses_8_Results_FreqAmp.png" />
+<strong>Transient Frequency and Amplitude Results.</strong> Example analysis of VTA DA transient frequency and amplitude after acute morphine administration. Representative examples of pre-injection baseline normalized traces from a single subject before and after <strong>A)</strong> an injection of saline (control) and <strong>B)</strong> an injection of morphine (10mg/kg). The vertical dashed line indicates time of injection. <strong>C)</strong> Mean transient frequency (transients per minute) across the entire session. <strong>D)</strong> Transient frequency binned in 5-minute time windows. <strong>E)</strong> Mean transient amplitude (z-score) across the session. <strong>F)</strong> Transient amplitude binned in 5-minute time windows. Data reflect automated transient detection using PASTa protocol defaults.</p>
+<p>Additionally, relative to the matched control session, morphine increased VTA DA activity transient rise duration (figure panels A and B) and decreased VTA DA activity transient fall duration (figure panels C and D). Morphine increased the overall AUC of transients (figure panel E). These trends emerged approximately 10 minutes post-injection and returned to pre-treatment baseline and matched control session levels by the end of the post-injection recording period (figure panels B, D, and F).</p>
+<p><img alt="png" src="../img/exampleanalyses_9_Results_Duration.png" />
+<strong>Transient Duration Results</strong>. Example analysis of VTA DA transient event duration and AUC following acute saline (blue, control) and morphine (red) administration. <strong>A)</strong> Mean transient rise duration (milliseconds) across the full session. <strong>B)</strong> Transient rise duration binned in 5-minute time windows. <strong>C)</strong> Mean transient fall duration (milliseconds) across the full session. <strong>D)</strong> Transient fall duration binned in 5-minute time windows. <strong>E)</strong> Mean area under the curve (AUC) for transients. <strong>F)</strong> Transient AUC binned in 5-minute time windows. All duration and AUC metrics were calculated at half-height relative to the peak. Vertical dashed lines in B, D, and F indicate the time of saline or morphine injection.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Together, this example analysis illustrates the complementary shifts in multiple aspects of transient dynamics, providing a more comprehensive evaluation of the effects of morphine on VTA DA activity. This example is provided to allow users to directly apply PASTa to a real data set and ensure that results are replicated across users of the toolbox.</p></div>
             </div>
         </div>
 
