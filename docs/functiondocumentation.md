@@ -1,57 +1,68 @@
 # Function Documentation Overview
-This page contains additional documentation for each function within PASTa, as well as examples of inputs.
+This page contains additional documentation for each function within PASTa, as well as examples of inputs. Detailed documentation is also available within each MATLAB function and can be viewed via the MATLAB help window or by opening the function file.
 
 # Data Preparation Functions
 This set of functions is used to prepare raw photometry data, match it with experimental metadata, and load data into a structure in MATLAB. Functions are provided to handle data collected via TDT equipment and software Synapse, or a generic file structure with data streams saved to CSV files.
 
-## loadKeys
-Combines subject key and file key into a data structure, and appends the provided computeruserpath to the paths in the file key.
+## createExperimentKey
+Combine subject key and file key into a single data structure, appending the provided rootdirectory to create full paths to stored data locations.
 
 **INPUTS:**
 
-* __COMPUTERUSERPATH:__ A variable containing the unique portion of the file explorer path for the users specific computer. For example, 'C:\Users\rmdon\'. Make sure the computeruserpath ends in a forward slash.
-* __SUBJECTKEYNAME:__ A variable containing a string with the name of the subject key csv file for the experiment (see _"3. Data Analysis Pipeline"_ for more details). To omit a subject key and only load in the file key, set subjectkeyname = "".
-* __FILEKEYNAME:__ A variable containing a string with the name of the file key csv file for the experiment (see _"3. Data Analysis Pipeline"_ for more details).
+* __ROOTDIRECTORY:__ String. The top-level directory path unique to your system. For example: 'C:\Users\rmdon\'. Must end with a slash/backslash.
+* __SUBJECTKEYNAME:__ String. The name (or full path) of the subject key CSV file (e.g. 'mySubjectKey.csv'). Must contain at least the variable *'SubjectID'*. To omit a subject key and only load in the file key, set subjectkeyname = ''. If empty (''), the subject key is skipped and only FILEKEYNAME is loaded. See the user guide [Data Preparation](https://rdonka.github.io/PASTaUserGuide/userguide/datapreparation/) for more details.
+* __FILEKEYNAME:__ String. The name (or full path) of the file key CSV file (e.g. 'myFileKey.csv'). Must contain *'SubjectID'*, *'BlockFolder'*, *'RawFolderPath'*, and *'ExtractedFolderPath'* columns at minimum. Paths in *'RawFolderPath'* and 'ExtractedFolderPath'should each end with a slash/backslash.
 
 **OUTPUTS:**
 
-* __EXPERIMENTKEY:__ A data structure called "experimentkey" that includes the joined file key and subject key with the computer user path appended to raw and extracted folder paths.
+* __EXPERIMENTKEY:__ A data structure of the combined file and subject key data. The *'rootdirectory'* is prepended to each row's *'RawFolderPath'* and *'ExtractedFolderPath'*, while the *'BlockFolder'* name is appended to both. 
+
 
 **EXAMPLE:**
 ```
-computeruserpath =  'C:\Users\MYNAME\'; % Computer specific portion of file navigation paths
-subjectkeyname = 'Subject Key.csv'; % Name of csv file containing subject information; set to '' if not using a subject key
-filekeyname = 'File Key.csv'; % Name of csv file containing session information, raw data folder names, and paths
+rootdirectory = 'C:\Users\rmdon\';
+subjKey = 'subjectKey.csv';
+fileKey = 'fileKey.csv';
 
-[experimentkey] = loadKeys(computeruserpath, subjectkeyname, filekeyname); % Load keys into a data structure called experimentkey
+ experimentkey = createExperimentKey(rootdirectory, subjKey, fileKey); % Load keys into a data structure called experimentkey
 ```
 
 **NOTES:**
 
-* FILEKEY must contain at a minimum the fields _Subject_, _RawFolderPath_, and _ExtractedFolderPath_. 
-* SUBJECTKEY must contain at a minimum the field _Subject_
+* FILEKEY must contain at a minimum the fields _SubjectID_, _BlockFolder_, _RawFolderPath_, and _ExtractedFolderPath_. 
+* SUBJECTKEY must contain at a minimum the field _SubjectID_
 * Folder paths must end with a slash.
-* The subject and file keys are joined based on Subject ID. Subject key must contain every subjects in the file key. If there is a mismatch, you will receive an error message that the right table does not contain all the key variables that are in the left table. The error message will display the unique subject IDs present in each key so you can determine where the mismatch occurred.
+* The subject and file keys are joined based on *SubjectID*. Subject key must contain every subjects in the file key. If there is a mismatch, you will receive an error message that the right table does not contain all the key variables that are in the left table. The error message will display the unique subject IDs present in each key so you can determine where the mismatch occurred.
 * Fields in subject and file key must be named uniquely. The only field that should be named the same in both keys is Subject.
 
 ## extractTDTdata
-This function is used to extract TDT data from saved blocks recorded via the software _Synapse_. For each block, extractTDTdata calls the function "TDTbin2mat" (TDT, 2019) and inputs the RawFolderPath to extract fiber photometry data recorded with Synapse. Extracted blocks are parsed it into a single data structure containing all fields, streams, and epocs. Extracted signal streams are trimmed to remove the first 5 seconds by default (trimming can be adjusted if desired). The function will identify the signal channel by matching the names in the input SIGSTREAMNAMES and the control channel by matching the names in the input BAQSTREAMNAMES. The name inputs can include a list of stream names if channel naming conventions vary by rig. Each block is saved as a separate data structure in a '.mat' file at the location specified by the inputs in extractedfolderpaths. 
+This function is used to extract TDT data from saved blocks recorded via the software _Synapse_. For each block, extractTDTdata calls the function *"TDTbin2mat"* (TDT, 2025) and inputs the *RawFolderPath* to extract fiber photometry data recorded with *Synapse*. Extracted blocks are parsed it into a single data structure containing all fields, streams, and event epocs. Extracted signal streams are trimmed to remove the first 5 seconds by default (trimming can be adjusted if desired). 
+
+The function will identify the signal channel by matching the names in the input SIGSTREAMNAMES and the control channel by matching the names in the input BAQSTREAMNAMES. The name inputs can include a list of stream names if channel naming conventions vary by rig. Each block is saved as a separate data structure in a '.mat' file at the location specified by the inputs in *extractedfolderpaths*. 
+
+For more details on preparing TDT data blocks, see the user guide section on [Data Preparation: Data Organization](https://rdonka.github.io/PASTaUserGuide/userguide/datapreparation/#data-organization).
 
 **INPUTS:**
 
-* __RAWFOLDERPATHS:__ a string array containing the paths to the folder location of the raw data blocks to be extracted. The string array should contain one column with each full path in a separate row.
-* __EXTRACTEDFOLDERPATHS:__ a string array containing the paths to the folder location in which to save the extracted MatLab structs for each block to be extracted. The string array should contain one column with each full path in a separate row.  
-* __SIGSTREAMNAMES:__ A cell array containing strings with the names of the streams to be treated as signal. Note that only one stream per file can be treated as signal. If different files have different stream names, include all stream names in the cell array.
-* __BAQSTREAMNAMES:__ A cell array containing strings with the names of the streams to be treated as background. Note that only one stream per file can be treated as background. If different files have different stream names, include all stream names in the cell array.
+* __RAWFOLDERPATHS:__ String array of raw TDT block folder paths. The string array should contain one column with each full path in a separate row. If using the *createExperimentKey* function, this can be created from the experiment key data structure. __For example:__
+```
+rawfolderpaths = string({experimentkey.RawFolderPath})';
+```
+* __EXTRACTEDFOLDERPATHS:__ String array of corresponding output paths where extracted data is saved. If using the createExperimentKey function, this can be created from the experiment key. __For example:__
+``` 
+extractedfolderpaths = string({experimentkey.ExtractedFolderPath})';
+```
+* __SIGSTREAMNAMES:__ Cell array of possible stream names for the "signal" channel (e.g. {'x65A','465A'}). __NOTE:__ Only one stream per file can be treated as signal. If different files have different stream names, include all stream names in the cell array.
+* __BAQSTREAMNAMES:__ Cell array of possible stream names for the "background" channel (e.g. {'x05A','405A'}). __NOTE:__ Only one stream per file can be treated as background. A cell array containing strings with the names of the streams to be treated as background. If different files have different background stream names, include all stream names in the cell array.
 
 **OPTIONAL INPUTS:**
 
-* __TRIM:__ the number of seconds to remove on either end of the data streams. If not specified, defaults to 5 seconds.
-* __SKIPEXISTING:__ A binary variable containing a 0 if pre-existing extracted blocks should be re-extracted or a 1 if pre-existing extracted blocks should be skipped. This allows the user to toggle whether or not to extract every block, or only blocks that have not previously been extracted. If not specified, defaults to 1 (skip previously extracted blocks).
+* __'trim':__ Numeric; Number of seconds to trim from the start and end of each recording. Default: 5
+* __'skipexisting':__  Numeric (0 or 1; Default: 1); If 1, skip extracting any session for which an output file already exists. If 0, re-extract and overwrite. This allows the user to toggle whether or not to extract every block, or only blocks that have not previously been extracted. If not specified, defaults to skip previously extracted blocks (1).
 
 **OUTPUTS:**
 
-Saved .mat data structures for each block in the location specified by extractedfolderpaths.
+Saved .mat data structures for each block in the location specified by *extractedfolderpaths*.
 
 **EXAMPLE - DEFAULT:**
 ```
@@ -60,23 +71,92 @@ baqstreamnames = {'x05A', '405A'}; % All names of background streams across file
 rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths
 extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths
 
-extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames); % extract data
+% Extract and save data structures for each file
+extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames); 
 ```
 
 **EXAMPLE - MANUALLY SPECIFIED TRIM AND SKIPEXISTING:**
 ```
-trim = 3;
-skipexisting = 0;
+trim = 3; % Set trim to 3 seconds
+skipexisting = 0; % Extract all blocks
 sigstreamnames = {'x65A', '465A'}; % All names of signal streams across files
 baqstreamnames = {'x05A', '405A'}; % All names of background streams across files
 rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths'
 extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths'
 
-extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames,'trim',trim,'skipexisting',skipexisting); % extract data
+% Extract and save data structures for each file
+extractTDTdata(rawfolderpaths,extractedfolderpaths,sigstreamnames,baqstreamnames,'trim',trim,'skipexisting',skipexisting); 
 ```
 
-## loadTDTdata
-For use with previously extracted data collect with TDT equipment and software Synapse. loadTDTData loads previously extracted .mat data blocks into a data structure for further analysis. Each block is one row. The input experiment key must include at a minimum the extracted folder path location of the block. Any additional information about the subject and session in the experiment key will be matched to the extracted data.
+## extractCSVdata
+This function is used to extract data collected from non-TDT systems (e.g., Neurophotometrics, Doric). Data must first be prepared in the generic CSV format, with each session saved as a folder containing CSV files of the signal, background, session recording parameters, and event epochs (optional). Note that session recording parameters must at least include the sampling rate as the variable *fs*. For more details on preparing CSV data files, see the user guide section on [Data Preparation: Data Organization](https://rdonka.github.io/PASTaUserGuide/userguide/datapreparation/#data-organization).
+
+For each block, *extractCSVdata* extracts the signal and background streams, recording parameters, and any specific event epochs into a single data structure containing all recording parameters, streams, and included event epochs. Extracted signal and background streams are trimmed to remove the first 5 seconds by default (trimming can be adjusted if desired). 
+
+Each block is saved as a separate data structure in a '.mat' file at the location specified by the inputs in *extractedfolderpaths*. 
+
+**INPUTS:**
+
+* __RAWFOLDERPATHS:__ String array of raw TDT block folder paths. The string array should contain one column with each full path in a separate row. If using the *createExperimentKey* function, this can be created from the experiment key data structure. __For example:__
+```
+rawfolderpaths = string({experimentkey.RawFolderPath})';
+```
+* __EXTRACTEDFOLDERPATHS:__ String array of corresponding output paths where extracted data is saved. If using the createExperimentKey function, this can be created from the experiment key. __For example:__
+``` 
+extractedfolderpaths = string({experimentkey.ExtractedFolderPath})';
+```
+* __SIGSTREAMNAME:__ String; Name of csv files containing the "signal" channel (e.g., *'sig'*). __NOTE:__ Only one stream per file can be treated as signal.
+* __BAQSTREAMNAME:__ String; Name of csv files containing the "background" channel (e.g. *'baq'*). __NOTE:__ Only one stream per file can be treated as background.
+
+**OPTIONAL INPUTS:**
+
+* __'loadepocs':__ Logical; Set to 1 to load event epoch files in the *'Raw Data'* session folders.
+* __'epocsnames':__ Cell array of file names of csv files containing event epochs to be loaded into the data structure. Note: Each type of epoch should be saved to a separate csv file. Pass all event epoch files names to *epocsnames*.
+* __'trim':__ Numeric; Number of seconds to trim from the start and end of each recording. Default: 5
+* __'skipexisting':__  Numeric (0 or 1; Default: 1); If 1, skip extracting any session for which an output file already exists. If 0, re-extract and overwrite. This allows the user to toggle whether or not to extract every block, or only blocks that have not previously been extracted. If not specified, defaults to skip previously extracted blocks (1).
+
+**OUTPUTS:**
+
+Saved .mat data structures for each block in the location specified by *extractedfolderpaths*.
+
+**EXAMPLE - DEFAULT:**
+```
+sigstreamname = 'sig'; % All names of signal streams across files
+baqstreamname = 'baq''; % All names of background streams across files
+rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths
+extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths
+
+% Extract and save data structures for each file
+extractCSVdata(rawfolderpaths,extractedfolderpaths,sigstreamname,baqstreamname); 
+```
+
+**EXAMPLE - WITH EPOCHS:**
+```
+sigstreamname = 'sig'; % All names of signal streams across files
+baqstreamname = 'baq''; % All names of background streams across files
+epocsnames = {'strt', 'injt'}; % Prepare names of csv files containing event epochs
+rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths
+extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths
+
+% Extract and save data structures for each file
+extractCSVdata(rawfolderpaths,extractedfolderpaths,sigstreamname,baqstreamname,'loadepocs',1,'epocsnames',epocsnames); 
+```
+
+**EXAMPLE - MANUALLY SPECIFIED TRIM AND SKIPEXISTING:**
+```
+trim = 3; % Set trim to 3 seconds
+skipexisting = 0; % Extract all blocks
+sigstreamname = 'sig'; % All names of signal streams across files
+baqstreamname = 'baq''; % All names of background streams across files
+rawfolderpaths = string({experimentkey.RawFolderPath})'; % Create string array of raw folder paths'
+extractedfolderpaths = string({experimentkey.ExtractedFolderPath})'; % Create string array of extracted folder paths'
+
+% Extract and save data structures for each file
+extractCSVdata(rawfolderpaths,extractedfolderpaths,sigstreamname,baqstreamname,'trim',trim,'skipexisting',skipexisting); 
+```
+
+## loadKeydata
+For use with previously extracted data. Compatible with data structures extracted by either the *extractTDTdata* or *extractCSVdata* functions. *loadKeydata* loads previously extracted .mat data blocks with individaul session data into a main data structure for further analysis. Each block is one row. The input experiment key must include at a minimum the extracted folder path location of the block. Any additional information about the subject and session in the experiment key will be matched to the extracted data.
 
 **INPUTS:**
 
@@ -91,142 +171,240 @@ For use with previously extracted data collect with TDT equipment and software S
 [rawdata] = loadKeydata(experimentkey); % Load data based on the experiment key into the structure 'rawdata'
 ```
 
-## loadCSVdata
-For use with data collected and stored to a general file structure. 
-
-_coming soon_
-
-
 ## cropFPdata
-Used to crop data streams to remove portions that are not to be included in analysis (such as the the first two minutes of the session, or the first samples before a hardware control program is initiated). Crops all specified data streams from the index in cropstart to the index in cropend, and adjusts epocs by the amount cropped by cropstart. Users must pre-prepare the crop start and end indexes to specify as inputs for the function.
+Used to crop data streams to remove portions that are not to be included in analysis (such as the the first two minutes of the session, or the first samples before a hardware control program is initiated). Crops all specified data streams from the index in *cropstart* to the index in *cropend*, and adjusts specified event epochs by the amount cropped by *cropstart*. Users must pre-prepare the crop start and end indexes to specify as inputs for the function.
 
 **INPUTS:**
 
-* __DATA:__ A data frame containing at least the specified input fields.
-* __CROPSTART:__ The location to start cropping at.
-* __CROPEND:__ The location to end cropping at.
-* __WHICHSTREAMS:__ A cell array containing the names of all the streams to be cropped.
+* __DATA:__ Data structure array containing at least the specified input fields.
+* __CROPSTARTFIELDNAME:__ String; Field name for cropping start index. __For example:__ 'sessionstart'.
+* __CROPENDFIELDNAME:__ String; Field name for cropping end index. __For example:__ 'sessionend'.
+* __STREAMFIELDNAMES:__ A cell array containing the names (strings) of all the data streams to be cropped. __For example:__ {'sig', 'baq'}
 
 **OPTIONAL INPUTS:**
 
-* __WHICHEPOCS:__ A cell array containing the names of all the epocs to be adjusted due to cropping - subtract the (start loc - 1) from the epoc.
+* __'epocsfieldnames':__ A cell array containing the field names of all the event epochs to be adjusted for cropping (event epoch - (start loc - 1)).
 
 **OUTPUTS:**
 
-* __DATA:__ The data structure with the specified data stream containing the cropped data.
+* __DATA:__ The data structure with the specified data streams containing the cropped data, and event epochs adjusted to maintain alignment with the data streams.
 
-**EXAMPLE:**
+**EXAMPLE: WITHOUT EVENT EPOCS**
 ```
-cropstart = 'sessionstart'; % name of field with session start index
-cropend = 'sessionend'; % name of field with session end index
-whichstreams = {'sig', 'baq','time'}; % which streams to crop
-whichepocs = {'injt','sess'}; % which epocs to adjust to maintain relative position
+cropstartfieldname = 'sessionstart'; % Name of field with session start index
+cropendfieldname = 'sessionend'; % Name of field with session end index
+streamfieldnames = {'sig', 'baq','time'}; % Names of all streams to crop
 
-[data] = cropFPdata(rawdata,cropstart,cropend, whichstreams,whichepocs); % Output cropped data into new structure called data
+% Output cropped data into new structure called data
+[data] = cropFPdata(rawdata,cropstartfieldname,cropendfieldname,streamfieldnames); 
 ```
+
+**EXAMPLE: WITH EVENT EPOCS**
+```
+cropstartfieldname = 'sessionstart'; % Name of field with session start index
+cropendfieldname = 'sessionend'; % Name of field with session end index
+streamfieldnames = {'sig', 'baq','time'}; % Names of all streams to crop
+epocsfieldnames = {'injt','sess'}; % Field names of event epocs to adjust to maintain relative position
+
+% Output cropped data into new structure called data
+[data] = cropFPdata(rawdata,cropstartfieldname,cropendfieldname,streamfieldnames,'epocsfieldnames',epocsfieldnames); 
+```
+
 
 # Signal Processing Functions
+This set of functions is used to process raw fiber photometry data prior to further analyses. Functions are available to perform background subtraction, filter, and normalize the data streams. While default options have been chosen to provide users with a conservative starting point, multiple options for signal processing and normalization are available to allow for customization to adapt to experimental needs.
+
+For a full discussion of available signal processing methods, see the user guide section [Signal Processing](https://rdonka.github.io/PASTaUserGuide/userguide/signalprocessing/).
 
 ## subtractFPdata
-Used to subtract the background photometry stream (eg, 405nm) from the signal stream (eg, 465nm), convert the subtracted signal to delta F/f, and apply a filter to denoise the output. Users must input the data structure with the raw data, the names of the fields containing the signal and background streams, and the sampling rate of the collected data.
+Subtracts background fluorescence stream (eg, 405nm 'baq') from the signal stream (eg, 465nm 'sig'), converts the subtracted signal to ΔF/f, and applies a filter to denoise the output. Users must input at a minimum the data structure with the raw data, the names of the fields containing the signal and background streams, and the name of the field containing the sampling rate of the collected data.
 
 **INPUTS:**
 
-* __DATA:__ A data frame containing at least the specified input fields.
-* __SIGFIELD:__ The name (string) of the field containing the signal stream.
-* __BAQFIELD:__ The name (string) of the field containing the background stream.
-* __WHICHFS:__ The name (string) of the field containing the sampling rate of the raw data collection in Hz.
+* __DATA:__ Data structure array containing at least the specified input fields (signal and background streams, sampling rate)
+* __SIGFIELDNAME:__ String; name of the field in DATA containing the signal data stream (e.g., *'sig'*).
+* __BAQFIELDNAME:__ String; name of the field in DATA containing the background data stream (e.g., *'baq'*).
+* __FSFIELDNAME:__ String; name of the field in DATA containing the sampling rate of the fiber photometry data streams in Hz (e.g., *'fs'*). __Note:__ The sampling rate must be specified in Hz for filtering to be properly applied.
 
 **OPTIONAL INPUTS:**
 
-* __BAQSCALINGTYPE:__ A string to specify the type of background scaling to apply. Options are 'frequency', 'sigmean', 'OLS', 'detrendOLS', 'smoothedOLS', or 'IRLS'. Default: 'frequency'.
-    * _'frequency':_ Scales the background to the signal channel based on ratio of specified frequency bands in the FFT (frequency domain) of the channels.
+* __'baqscalingtype':__ A string to specify the type of background scaling to apply. Options are *'frequency'*, *'sigmean'*, *'OLS'*, *'detrendedOLS'*, *'smoothedOLS'*, *'biexpOLS'*, *'biexpQuartFit'*, or *'IRLS'*. __Default:__ *'frequency'*.
+    * _'frequency':_ __Default__; Scales the background to the signal channel based on ratio of the power in the specified frequency bands in the FFT (frequency domain) of the channels.
     * _'sigmean':_ Scales the background to the signal channel based on the ratio of the mean of the signal to the mean of the background (time domain).
     * _'OLS':_ Uses ordinary least-squares regression to generate scaled background.
-    * _'detrendOLS':_ Removes the linear trend from signal and background streams prior to using ordinary least-squares regression to generate scaled background.
+    * _'detrendedOLS':_ Removes the linear trend from signal and background streams prior to using ordinary least-squares regression to generate scaled background.
     * _'smoothedOLS':_ Applies lowess smoothing to the signal and background streams prior to using ordinary least-squares regression to generate scaled background.
+    * _'biexpOLS':_ Fits and removes a bi-exponential decay function from the raw background and signal streams, then scales the corrected background to the corrected signal with ordinary least-squares regression.
+    * _'biQuartFit':_ Fits and removes a bi-exponential decay function from the raw background and signal streams, then scales the corrected background to the corrected signal based on the interquartile range.
     * _'IRLS':_ Uses iteratively reweighted least squares regression to generate scaled background.
-* __BAQSCALINGFREQ:__ Only used with 'frequency' scaling. Numeric frequency (Hz) threshold for scaling the background to signal channel. Frequencies above this value will be included in the scaling factor determination. Default: 10 Hz.
-* __BAQSCALINGPERC:__ Only used with 'frequency' and 'sigmean' scaling. Adjusts the background scaling factor to be a percent of the derived scaling factor value. Default: 1 (100%).
-* __SUBTRACTIONOUTPUT:__ Output type for the subtracted data. Default: 'dff'
-    * _'dff':_ Outputs subtracted signal as delta F/F.
-    * _'df':_ Outputs subtracted signal as delta F.
-* __FILTERTYPE:__ A string to specify the type of filter to apply after subtraction. Default: 'bandpass'.
+* __'baqscalingfreqmin':__ Only used with *'frequency'* scaling. Numeric frequency (Hz) minimum threshold for scaling the background to signal channel. Frequencies above this value will be included in the scaling factor determination. __Default:__ 10 Hz.
+* __'baqscalingfreqmax':__ Only used with *'frequency'* scaling. Numeric frequency (Hz) maximum threshold for scaling the background to signal channel. Frequencies below this value will be included in the scaling factor determination. __Default:__ 100 Hz.
+* __'baqscalingperc':__ Only used with *'frequency'* and *'sigmean'* scaling. Adjusts the background scaling factor to be a percent of the derived scaling factor value. __Default:__ 1 (100%).
+* __'subtractionoutput':__ Output type for the subtracted data. __Default:__ 'dff'
+    * _'dff':_ Outputs subtracted signal as ΔF/F. ((signal - scaled background) / scaled background)
+    * _'df':_ Outputs subtracted signal as ΔF. (signal - scaled background)
+* __'artifactremoval'__: Logical (0 or 1); set to 1 to detect and remove artifacts from data streams. Default: 0 (false). _Note:_ see *removeStreamArtifacts* function documentation for more detail. 
+* __'filtertype':__ A string to specify the type of filter to apply after subtraction. __Default:__ 'bandpass'.
     * _'nofilter':_ No filter will be applied.
-    * _'bandpass':_ A bandpass filter will be applied.
-    * _'highpass':_ Only the high pass filter will be applied.
-    * _'lowpass':_ Only the low pass filter will be applied.
-* __PADDING:__ Defaults to 1, which applies padding. Padding takes the first 10% of the stream, flips it, and appends it to the data before filtering. Appended data is trimmed after filtration. Set to 0 to turn off padding of data streams. Default: 1.
-* __PADDINGPERC:__ Percent of data length to use to determine the number of samples to be appended to the beginning and end of data in padding. Set to minimum 10%. Default: 0.1 (10%).
-* __FILTERORDER:__  The order to be used for the chosen butterworth filter. Default: 3.
-* __HIGHPASSCUTOFF:__  The cutoff frequency (hz) to be used for the high pass butterworth filter. Default: 2.2860.
-* __LOWPASSCUTOFF:__ The cutoff to be used for the low pass butterworth filter. Default: 0.0051.
-    * NOTE: 'bandpass' applies both the high and low cutoffs to design the filter.
-* __SUPRESSDISP:__ If set to anything other than 0, this will suppress the command window displays. Default: 0.
+    * _'bandpass':_ A bandpass Butterworth filter will be applied.
+    * _'highpass':_ Only a high pass Butterworth filter will be applied.
+    * _'lowpass':_ Only a low pass Butterworth filter will be applied.
+* __'padding':__ Defaults to 1, which applies padding prior to filtering. Padding takes the first 10% of the stream, flips it, and appends it to the data before applying the filter to prevent edge effects. Appended data is trimmed after filtering. Set to 0 to turn off padding of data streams. __Default:__ 1.
+* __'paddingperc':__ Percent of data length to use to determine the number of samples to be appended to the beginning and end of data in padding. Set to minimum of 0.1 (10%). __Default: 0.1__ (10%).
+* __'filterorder':__  The order to be used for the chosen Butterworth filter. __Default:__ 3.
+* __'highpasscutoff':__  The cutoff frequency (Hz) to be used for the high pass Butterworth filter. __Default:__ 2.2860.
+* __'lowpasscutoff':__ The cutoff frequency (Hz) to be used for the low pass butterworth filter. __Default:__ 0.0051.
+    * NOTE: *'bandpass'* applies both the high and low pass cutoffs to design the filter.
+
 
 **OUTPUTS:**
 
-* __DATA:__ The original data structure with added fields with the scaled background ('baq_scaled'), subtracted signal ('sigsub'), and subtracted and filtered signal ('sigfilt'). All inputs and defaults will be added to the data structure under the field 'inputs'.
-    * __NOTE:__ If using BAQSCALINGMETHOD _'detrendOLS'_, additional fields containing the detrended signal and background ('sig_detrend' and 'baq_detrend') will be added to the data frame. If using BAQSCALINGMETHOD _'smoothedOLS'_, additional fields containing the smoothed signal and background ('sig_smoothed' and 'baq_smoothed') will be added to the data frame.
+* __DATA:__ The original data structure with added fields with the scaled background ('baqscaled'), subtracted signal ('sigsub'), and subtracted and filtered signal ('sigfilt'). All inputs and defaults will be added to the data structure under the field 'inputs'.
+    * __NOTE:__ If using BAQSCALINGMETHOD _'detrendedOLS'_, additional fields containing the detrended signal and background ('sigdetrend' and 'baqdetrend') will be added to the data frame. If using BAQSCALINGMETHOD _'smoothedOLS'_, additional fields containing the smoothed signal and background ('sigsmoothed' and 'baqsmoothed') will be added to the data frame. If using BAQSCALINGMETHOD _'biexpOLS'_ or _'biexpQuartFit'_, additional fields containing the bi-exponential decay corrected signal and background ('sigbiexpcorrected' and 'baqbiexpcorrected') will be added to the data frame.  
 
 
 **EXAMPLE - DEFAULT:**
 ```
-sigfield = 'sig';
-baqfield = 'baq';
-fs = 1017;
+sigfieldname = 'sig';
+baqfieldname = 'baq';
+fsfieldname = 'fs';
 
-data = subtractFPdata(data,sigfield,baqfield,fs);
+data = subtractFPdata(data,sigfieldname,baqfieldname,fsfieldname);
 ```
 
-**EXAMPLE - Frequency Scaling with 20Hz Threshold and Highpass Filter Only:**
+**EXAMPLE - Frequency Scaling with 20Hz Minimum Threshold and Highpass Filter Only:**
 ```
-sigfield = 'sig';
-baqfield = 'baq';
-fs = 1017;
+sigfieldname = 'sig';
+baqfieldname = 'baq';
+fsfieldname = 'fs';
 
-data = subtractFPdata(data,sigfield,baqfield,fs,'baqscalingfreq',20,'filtertype,'highpass');
+data = subtractFPdata(data,sigfieldname,baqfieldname,fsfieldname,'baqscalingfreqmin',20,'filtertype,'highpass');
 ```
 
+**EXAMPLE - OLS Scaling:**
+```
+sigfieldname = 'sig';
+baqfieldname = 'baq';
+fsfieldname = 'fs';
 
-## normSession
-Used to normalize the subtracted and filtered signal stream to Z score based on the whole session mean and standard deviation.
+data = subtractFPdata(data,sigfieldname,baqfieldname,fsfieldname,'baqscalingtype','OLS');
+```
+
+**EXAMPLE - IRLS Scaling:**
+```
+sigfieldname = 'sig';
+baqfieldname = 'baq';
+fsfieldname = 'fs';
+
+data = subtractFPdata(data,sigfieldname,baqfieldname,fsfieldname,'baqscalingtype','IRLS');
+```
+
+## removeStreamArtifacts
+Detects and removes artifacts from fiber photometry data streams. Called by the *subtractFPdata* function prior to filtering if the optional input *removeartifacts* is set to 1.
 
 **INPUTS:**
 
-* __DATA:__ A data frame containing at least the stream specified to be normalized.
-* __WHICHSTREAM:__ A string with the name of the field containing the stream to be normalized.
+* __DATASTREAM:__ Numeric array; The signal data for artifact removal.
+* __STREAMFIELDNAME:__ String; Name of the stream being processed.
+* __FS:__ Numeric; Sampling rate of the data stream being processed (Hz).
+
+**OPTIONAL INPUTS:**
+
+* __'outlierthresholdk':__ ANumeric, Integer; Multiplier for outlier threshold detection. __Default:__ 3
+* __'artifactremovalwindow':__  Numeric; Seconds before and after an artifact to replace with NaNs. __Default:__ 0.3
+* __'artifactampthresh_max':__ Numeric; Standard deviation threshold for high artifacts. __Default:__ 8
+* __'artifactampthresh_min':__ Numeric; Standard deviation threshold for low artifacts. __Default:__ 8
+* __'bucketsizeSecs':__ Numeric; Bucket time window length (seconds) for amplitude and mean calculations.
+
+**OUTPUTS:**
+
+* __ARTIFACTREMOVALDATA:__ Data structure containing:
+    * __STREAMFIELDNAME_AR:__ Data stream with artifacts replaced by NaNs
+    * __STREAMFIELDNAME_AM:__ Data stream with artifacts replaced by mean values
+    * __NUMARTIFACTS:__ Number of detected artifacts
+    * __ARTIFACTS:__ Table of artifact details (locations, values, start/end indices)
+
+
+**EXAMPLE: Default Parameters**
+```
+datastream = [data(1).sigsub]; % Prepare numeric vector of a stream for one recording session
+streamfieldname = 'sigsub'; % Field name of the prepared *datastream* input for artifact removal
+fs = data(1).fs; % Prepare sampling rate of the data stream in Hz
+
+% Detect and Remove Artifacts
+[artifactremovaldata] = removeStreamArtifacts(datastream,streamfieldname,fs);
+```
+
+**EXAMPLE: Increased Artifact Threshold**
+```
+datastream = [data(1).sigsub]; % Prepare numeric vector of a stream for one recording session
+streamfieldname = 'sigsub'; % Field name of the prepared *datastream* input for artifact removal
+fs = data(1).fs; % Prepare sampling rate of the data stream in Hz
+
+% Detect and Remove Artifacts
+[artifactremovaldata] = removeStreamArtifacts(datastream,streamfieldname,fs,'artifactampthresh_max',10,'artifactampthresh_min',10);
+```
+
+## prepareStreamFFT
+Helper function to compute the one-sided Fast Fourier Transform (FFT) of a data stream for analysis and plotting. This function is called by the *subtractFPdata*, *plotFFTmag*, and *plotFFTpower* functions.
+
+**INPUTS:**
+
+* __STREAMDATA:__ Numeric vector; the input data stream to be transformed.
+* __FS:__ Positive scalar; the sampling rate of the data stream in Hz.
 
 
 **OUTPUTS:**
 
-* __DATA:__ The data structure with the field 'data.WHICHSTREAMz_normsession' containing the whole session normalized signal added.
+* __STREAMFFT:__ Numeric vector; the magnitudes of the one-sided FFT of the input data stream.
+* __STREAMF:__ Numeric vector; the corresponding frequency values in Hz for the FFT magnitudes.
+
+**EXAMPLE:**
+```
+streamdata = [data(1).sig]; % Prepare numeric vector of the signal stream for one recording session
+fs = data(1).fs; % Prepare sampling rate of the data stream in Hz
+
+% Compute the FFT
+[streamFFT, streamF] = preparestreamFFT(streamdata, fs);
+```
+
+## normSession
+Normalizes a specified data stream to Z-score based on the entire session mean and standard deviation.
+
+**INPUTS:**
+
+* __DATA:__ Data structure array; each element (row) represents a single recording session and must contain the field specified by STREAMFIELDNAME.
+* __STREAMFIELDNAME:__ String; the name of the field within DATA to be normalized. __For example:__ 'sigfilt'
+
+
+**OUTPUTS:**
+
+* __DATA:__ The original data structure with the added field 'data.WHICHSTREAMz_normsession' containing the whole session normalized signal.
 
 **EXAMPLE:**
 ```
 [data] = normSession(data,'sigfilt'); % Outputs whole session z score
-
 ```
 
 ## normBaseline
-Used to normalize the subtracted and filtered signal stream to Z score based on the a session baseline mean and standard deviation.
+Normalizes a specified data stream to Z-score based on the specified session baseline period.
 
 **INPUTS:**
 
-* __DATA:__ A data frame containing at least the stream specified to be normalized.
-* __WHICHSTREAM:__ A string with the name of the field containing the stream to be normalized.
-* __WHICHBLSTART:__ A string with the name of the field containing the index of the start of the baseline period.
-* __WHICHBLEND:__ A string with the name of the field containing the index of the end of the baseline period.
+* __DATA:__ Data structure array; each element (row) represents a single recording session and must contain the field specified by STREAMFIELDNAME.
+* __STREAMFIELDNAME:__ String; the name of the field within DATA to be normalized. __For example:__ 'sigfilt'
+* __BLSTARTFIELDNAME:__ String; The name of the field containing the index of the start of the baseline period.
+* __BLENDFIELDNAME:__ String; The name of the field containing the index of the end of the baseline period.
 
 
 **OUTPUTS:**
 
-* __DATA:__ The data structure with the field 'data.WHICHSTREAMz_normbaseline' containing the full stream normalized to baseline added.
+* __DATA:__ The original data structure with the added field 'data.WHICHSTREAMz_normbaseline' containing the baseline normalized signal.
 
 **EXAMPLE:**
 ```
-% Prepare baseline start and end indices
-for eachfile = 1:length(data) % prepare indexes for baseline period start and end
+% Prepare baseline start and end indices based on event epoch
+for eachfile = 1:length(data)
     data(eachfile).BLstart = 1;
     data(eachfile).BLend =  data(eachfile).injt(1);
 end
@@ -234,6 +412,31 @@ end
 % Normalize filtered signal to session baseline mean and SD
 [data] = normBaseline(data,'sigfilt','BLstart','BLend');
 ```
+
+## normCustom
+Normalizes the whole session data stream based on a custom period input as a separate stream field.
+
+**INPUTS:**
+
+* __DATA:__ Data structure array; each element (row) represents a single recording session and must contain the field specified by STREAMFIELDNAME.
+* __FULLSTREAMFIELDNAME:__ String; the name of the field within DATA to be normalized. __For example:__ 'sigfilt'
+* _CUSTOMSTREAMFIELDNAME:__ String; The name of the field containing the cut data stream to use as the reference for normalization.
+
+**OUTPUTS:**
+
+* __DATA:__ The original data structure with the added field 'data.WHICHSTREAMz_normcustom' containing the baseline normalized signal.
+
+**EXAMPLE:**
+```
+% Prepare custom data stream for normalization using the pre-trial and post-trial periods of the session
+for eachfile = 1:length(data)
+    data(eachfile).customnorm = [data(eachfile).sigfilt(1:data(eachfile).trial(1)), data(eachfile).sigfilt(data(eachfile).trial(30):length(data(eachfile).sigfilt))];
+end
+
+% Normalize filtered signal to custom session period mean and SD
+[data] = normCustom(data,'sigfilt','customnorm');
+```
+
 
 ## preparestreamFFT
 Helper function to take the FFT of a data stream and output the magnitudes and corresponding frequencies for analysis, plotting, and diagnostics. This function is called by the plot function *plotFFTs* but can also be used to prepare FFTs for each stream of data for all sessions with use in a for loop.
