@@ -18,16 +18,7 @@ nav:
     - References: about/references.md
   - Learning Resources: learningresources.md
 
-plugins:
-  - material/social
-
 theme:
   name: mkdocs
   features:
     - navigation.footer
-
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/rdonka/PASTa
-      name: PASTa GitHub
