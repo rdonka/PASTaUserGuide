@@ -198,9 +198,9 @@
               </ul>
             </li>
             
-            <li class="nav-item" data-bs-level="1"><a href="#transient-detection-and-quantification-functions" class="nav-link">Transient Detection and Quantification Functions</a>
+            <li class="nav-item" data-bs-level="1"><a href="#transient-analysis-functions" class="nav-link">Transient Analysis Functions</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#findsessiontransients" class="nav-link">findSessionTransients</a>
+            <li class="nav-item" data-bs-level="2"><a href="#findtransients" class="nav-link">findTransients</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -647,13 +647,20 @@ for eachfile = 1:length(data)
     end
 end
 </code></pre>
-<h1 id="transient-detection-and-quantification-functions">Transient Detection and Quantification Functions</h1>
-<h2 id="findsessiontransients">findSessionTransients</h2>
-<p>Main function to detect and quantify transient events in whole session data streams. Use of this main function will set default values for parameters not specific as optional inputs. Users must input the raw data structure containing the data stream, a field with threshold values for transient inclusion, and the sampling rate of the stream. Optional inputs can be specified to modify transient detection parameters, but defaults will be applied if not specified.</p>
+<h1 id="transient-analysis-functions">Transient Analysis Functions</h1>
+<h2 id="findtransients">findTransients</h2>
+<p>Main function to detect and quantify transient events in whole session data streams. Users must input the raw data structure containing the data stream, a field with threshold values for transient inclusion, and the sampling rate of the stream. <em>findTransients</em> will output a new data structure (<em>transientdata</em>) with any user specified fields from the original data structure, and the field <em>'transientquantification'</em> containing quantification variables for each detected transient event. </p>
+<p>The <em>findTransients</em> function will set default values for transient detection and quantification parameters not specific as optional inputs. Optional inputs can be specified to modify transient detection parameters. See the user guide section <a href="https://rdonka.github.io/PASTaUserGuide/userguide/transientanalysis/">Transient Analysis</a> for more details.</p>
 <p><strong>INPUTS:</strong></p>
 <ul>
-<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
-<li><strong>WHICHBLTYPE:</strong> A string with the type of pre-transient baseline to use for amplitude inclusion and quantification.<ul>
+<li><strong>DATA:</strong> Data structure array; each element (row) represents a single recording session and must contain the fields specified by ADDVARIABLESFIELDNAMES, STREAMFIELDNAME, THRESHOLDFIELDNAME, and FSFIELDNAME.</li>
+<li><strong>ADDVARIABLESFIELDNAMES:</strong> Cell array; names of the fields in DATA to add to the new data structure. This should include SubjectID and experimentally relevant metadata. <strong>For example:</strong> {'SubjectID', 'BlockFolder', 'Dose'}</li>
+<li>
+<p><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</p>
+</li>
+<li>
+<p><strong>WHICHBLTYPE:</strong> A string with the type of pre-transient baseline to use for amplitude inclusion and quantification.</p>
+<ul>
 <li><em>'blmean':</em> Pre-transient baselines are set to the mean of the pre-transient window.</li>
 <li><em>'blmin':</em> Pre-transient baselines are set to the minimum value within the pre-transient window.</li>
 <li><em>'localmin':</em> Pre-transient baselines are set to the local minimum directly preceding the transient within the baseline window.</li>
