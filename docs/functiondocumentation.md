@@ -473,14 +473,22 @@ for eachfile = 1:length(data)
 end
 ```
 
-# Transient Detection and Quantification Functions
-## findSessionTransients
-Main function to detect and quantify transient events in whole session data streams. Use of this main function will set default values for parameters not specific as optional inputs. Users must input the raw data structure containing the data stream, a field with threshold values for transient inclusion, and the sampling rate of the stream. Optional inputs can be specified to modify transient detection parameters, but defaults will be applied if not specified.
+# Transient Analysis Functions
+## findTransients
+Main function to detect and quantify transient events in whole session data streams. Users must input the raw data structure containing the data stream, a field with threshold values for transient inclusion, and the sampling rate of the stream. *findTransients* will output a new data structure (*transientdata*) with any user specified fields from the original data structure, and the field *'transientquantification'* containing quantification variables for each detected transient event. 
 
+The *findTransients* function will set default values for transient detection and quantification parameters not specific as optional inputs. Optional inputs can be specified to modify transient detection parameters. See the user guide section [Transient Analysis](https://rdonka.github.io/PASTaUserGuide/userguide/transientanalysis/) for more details.
 
 **INPUTS:**
 
-* __DATA:__ This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.
+* __DATA:__ Data structure array; each element (row) represents a single recording session and must contain the fields specified by ADDVARIABLESFIELDNAMES, STREAMFIELDNAME, THRESHOLDFIELDNAME, and FSFIELDNAME.
+* __ADDVARIABLESFIELDNAMES:__ Cell array; names of the fields in DATA to add to the new data structure. This should include SubjectID and experimentally relevant metadata. __For example:__ {'SubjectID', 'BlockFolder', 'Dose'}
+* __WHICHSTREAM:__ The name (string) of the field containing the stream to be analyzed for transients.
+
+
+
+
+
 * __WHICHBLTYPE:__ A string with the type of pre-transient baseline to use for amplitude inclusion and quantification.
     * _'blmean':_ Pre-transient baselines are set to the mean of the pre-transient window.
     * _'blmin':_ Pre-transient baselines are set to the minimum value within the pre-transient window.

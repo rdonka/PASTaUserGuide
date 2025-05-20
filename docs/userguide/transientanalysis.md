@@ -412,6 +412,6 @@ __REQUIRED INPUTS:__ When calling the _summarizeTransients_ function, users must
 
 __OUTPUT:__
 
-The function will return the _transientdata_ structure with the added field _'transientsummary_session'_ containing the average transient quantification output. Quantification variables (see above, Summarize Whole Session Transient Events) will be returned for each bin, with the bin ID in the first column of the table under the field name specified by _binfieldname_.
+The function will return the _transientdata_ structure with the added field _'transientsummary_<binfieldname>'_ containing the average transient quantification output by time bin. Quantification variables (see above, Summarize Whole Session Transient Events) will be returned for each bin, with the bin ID in the first column of the table under the field name specified by _binfieldname_.
 
 
