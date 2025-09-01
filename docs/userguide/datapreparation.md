@@ -28,6 +28,9 @@ Synapse will save a new Tank for every day unless you change the default setting
 ![png](../img/datapreparation_1_SynapseDataSaving.png)
 If data are collected with Synapse (Tucker Davis Technologies), raw block folders can be placed directly in the _Raw Data_ folder. Copy the data blocks output by Synapse for each session into _Raw Data_. If blocks are nested in tanks, we recommend to unnest the blocks for ease of file key creation.
 
+#### Option 1a: Synapse (TDT) Format - Multiple Sessions Per Block
+Depending on setting configuration, _Synapse_ can also store multiple fiber photometry sessions run simultaneously into one block with sessions identified by the Stores Listing ID for each stream (e.g., 405A and 465A, 405B and 465B). In this case, users can either pre-separate the blocks with TDT's tank manager, or use modified multi block data extraction and load data functions (see below for more details).
+
 #### Option 2: CSV Format
 If data are collected with other systems (e.g., Neurophotometics, Doric), users must first format the data files into CSV files.
 
@@ -168,6 +171,32 @@ _Note: The names of the streams in the raw data blocks are set in the program Sy
 
 __Code example:__
 ![png](../img/datapreparation_7_extractTDTdata.png)
+
+### Option 1a: Synapse (TDT) Format - Multiple Sessions Per Block
+For data collected with Synapse (Tucker Davis Technologies) software with multiple sessions saved to each block, use the *extractTDTdata_multiblock* function to extract and save a MATLAB structure for each session.
+
+__REQUIRED INPUTS:__
+
+- __experimentkey:__ The full experiment key created by the *createExperimentKey* function, with at minimum the fields:
+    - __RawFolderPath__: Field containing the relative path to the parent directory that contains the block folder listed in the _“BlockFolder”_ column. End the path with a forward slash (e.g., '\').
+    - __ExtractedFolderPath__: Field containing the relative path to the parent directory where the extracted data structure should be saved. This should also end in a forward slash. The extracted data location should be separate from the location of the raw data blocks. The SubjectID will be appended to this path to ensure unique output files for each session nested within the Block.
+
+- __sigstreamfieldname:__ String; the name of the field in the experiment key containing the name of the signal stream for each session. *Note: these can be identified by looking in the Stores Listing file within each block folder. Be sure to correctly identify the stream name for each session of data nested in the Block.*
+
+- __baqstreamfieldname:__ String; the name of the field in the experiment key containing the name of the background stream for each session. *Note: these can be identified by looking in the Stores Listing file within each block folder. Be sure to correctly identify the stream name for each session of data nested in the Block.*
+
+__OPTIONAL INPUTS:__
+
+- __‘trim’:__ Specify the number of seconds to trim from the start of the session. By default, the first 5 seconds are trimmed from each stream (see trimming example figure above).
+
+- __‘skipexisting’:__ By default, the function will skip any sessions that already have an extracted MATLAB structure saved to the specified ExtractedFolderPath. To reprocess and overwrite existing structures, set _‘skipexisting’_ to 0.
+
+__OUTPUT:__
+
+- Individual MATLAB structures with extracted data for each session, saved to the location specified by the _extractedfolderpaths_ with the SubjectID appended to the end. Each structure includes session date, session time, session length, the sampling rate (fs), fiber photometry signal and background streams (sig and baq), and any event epochs.
+
+_Note: The names of the streams in the raw data blocks are set in the program Synapse. To determine what stream names were set, check the ‘StoresListing.txt’ file in the raw data block folders. Stream names may be loaded into MATLAB with an ‘x’ in front of the numbers, and the ‘x’ may not appear in stores listing. Be sure to align the stream names with the correct Subject for each nested session within the block. The function will identify the specific streams per the experiment key and load the specified stores into the sig (signal) and baq (background or control) fields respectively._
+
 ### Option 2: CSV Format
 For data collected with other systems (e.g., Neurophotometrics, Doric), use the _extractCSVdata_ function to extract and save a MATLAB structure for each session.
 
@@ -217,6 +246,18 @@ _Note: If desired, users can create and use their own pipeline to organize and l
 
 __Code example:__
 ![png](../img/datapreparation_9_cropFPdata.png)
+
+#### Load data into a MATLAB structure - Multiblock Format
+If TDT data is stored in the multi block format, with multiple sessions of recording nested within each block, use the *loadKeydata_multiblock* function to load the extracted fiber photometry data for all sessions in the _experimentkey_. This function matches each session in the experiment key to its corresponding extracted MATLAB structure and appends fiber photometry data fields.
+
+__REQUIRED INPUTS:__
+
+- __experimentkey:__ The _experimentkey_ object created by the _createExperimentKey_ function. *Note: The SubjectID from the experiment key will be appended to the extracted folder path to properly load each extracted session into MATLAB.
+
+__Output:__
+
+- __data:__ The combined data structure containing all fields in the experiment key appended with the extracted fiber photometry data for each session. All subject and session specific metadata are included alongside the fiber photometry data for streamlined analysis.
+
 ### Optional: Crop fiber photometry data
 In cases where fiber photometry recordings begin or end outside the experimentally relevant period – for example, when hardware is manually triggered before or after the behavioral task begins or ends – users may wish to crop the data streams to remove the beginning and end of each session. Additionally, users may wish to exclude the initial portion of the recording session (e.g., the first few minutes), where photobleaching is typically more pronounced and nonlinear before signal stabilization.
 
