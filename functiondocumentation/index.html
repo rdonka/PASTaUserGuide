@@ -204,7 +204,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#binsessiontransients" class="nav-link">binSessionTransients</a>
+            <li class="nav-item" data-bs-level="2"><a href="#bintransients" class="nav-link">binTransients</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -649,194 +649,72 @@ end
 </code></pre>
 <h1 id="transient-analysis-functions">Transient Analysis Functions</h1>
 <h2 id="findtransients">findTransients</h2>
-<p>Main function to detect and quantify transient events in whole session data streams. Users must input the raw data structure containing the data stream, a field with threshold values for transient inclusion, and the sampling rate of the stream. <em>findTransients</em> will output a new data structure (<em>transientdata</em>) with any user specified fields from the original data structure, and the field <em>'transientquantification'</em> containing quantification variables for each detected transient event. </p>
+<p>Main function to detect and quantify transient events in whole session data streams. Users must input the raw data structure containing the data stream, a field with threshold values for transient inclusion, and the name of the field with the sampling rate of the stream. <em>findTransients</em> will output a new data structure (<em>transientdata</em>) with any user specified fields from the original data structure, and the field <em>'transientquantification'</em> containing quantification variables for each detected transient event. </p>
 <p>The <em>findTransients</em> function will set default values for transient detection and quantification parameters not specific as optional inputs. Optional inputs can be specified to modify transient detection parameters. See the user guide section <a href="https://rdonka.github.io/PASTaUserGuide/userguide/transientanalysis/">Transient Analysis</a> for more details.</p>
 <p><strong>INPUTS:</strong></p>
 <ul>
 <li><strong>DATA:</strong> Data structure array; each element (row) represents a single recording session and must contain the fields specified by ADDVARIABLESFIELDNAMES, STREAMFIELDNAME, THRESHOLDFIELDNAME, and FSFIELDNAME.</li>
 <li><strong>ADDVARIABLESFIELDNAMES:</strong> Cell array; names of the fields in DATA to add to the new data structure. This should include SubjectID and experimentally relevant metadata. <strong>For example:</strong> {'SubjectID', 'BlockFolder', 'Dose'}</li>
-<li>
-<p><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</p>
-</li>
-<li>
-<p><strong>WHICHBLTYPE:</strong> A string with the type of pre-transient baseline to use for amplitude inclusion and quantification.</p>
+<li><strong>STREAMFIELDNAME:</strong> String; name of the field in DATA containing the data stream to be analyzed for transient events (e.g., 'sigfiltz_normsession')</li>
+<li><strong>THRESHOLDFIELDNAME:</strong> String; name of the field in DATA containing the numeric threshold values for transient detection (e.g., 'SDthreshold'). Thresholds should be precomputed and typically set to 2.6 standard deviations</li>
+<li><strong>FSFIELDNAME:</strong> String; name of the field in DATA containing the sampling rate (fs) of the data stream.</li>
+</ul>
+<p><strong>OPTIONAL INPUTS:</strong></p>
 <ul>
+<li><strong>'bltype':</strong> String; Method for pre-transient peak baseline detection. Options are <em>'blmean'</em> (<strong>default</strong>), <em>'blmin'</em>, and <em>'localmin'</em>.<ul>
 <li><em>'blmean':</em> Pre-transient baselines are set to the mean of the pre-transient window.</li>
 <li><em>'blmin':</em> Pre-transient baselines are set to the minimum value within the pre-transient window.</li>
 <li><em>'localmin':</em> Pre-transient baselines are set to the local minimum directly preceding the transient within the baseline window.</li>
 </ul>
 </li>
-<li><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</li>
-<li><strong>WHICHTHRESHOLD:</strong> The name (string) of the field containing the prepared numeric threshold values for each stream. For example, 'threshold_3SD'. </li>
-<li><strong>WHICHFS:</strong> The name (string) of the field containing the sampling rate of the raw data collection in Hz.</li>
-</ul>
-<p><strong>OPTIONAL INPUTS:</strong></p>
-<ul>
-<li><strong>PREMINSTARTMS:</strong> Number of millseconds pre-transient to use as the start of the baseline window. <em>Default: 800</em></li>
-<li><strong>PREMINENDMS:</strong> Number of millseconds pre-transient to use as the end of the baseline window. <em>Default: 100</em></li>
-<li><strong>POSTTRANSIENTMS:</strong> Number of millseconds post-transient to use for the post peak baseline and trimmed data output. <em>Default: 2000</em></li>
-<li><strong>QUANTIFICATIONHEIGHT:</strong> The height at which to characterize rise time, fall time, peak width, and AUC. Must be a number between 0 and 1. <em>Default: 0.5</em></li>
-<li><strong>OUTPUTTRANSIENTDATA:</strong> Set to 1 to output cut data streams for each transient event for further analysis or plotting. Set to 0 to skip. <em>Default: 1</em></li>
+<li><strong>'blstartms'</strong> Numeric; start time (ms) of the pre-transient baseline window. <strong>Default:</strong> 1000 ms</li>
+<li><strong>'blendms'</strong> Numeric; end time (ms) of the pre-transient baseline window. <strong>Default:</strong> 200 ms</li>
+<li><strong>'posttransientms'</strong> Numeric; duration (ms) after the transient peak for analysis. <strong>Default:</strong> 2000 ms</li>
+<li><strong>'quantificationheight'</strong> Numeric; height (as a fraction of peak amplitude) at which to characterize rise time, fall time, peak width, and area under the curve (AUC). Must be between 0 and 1. <strong>Default:</strong> 0.5</li>
+<li><strong>'compoundtransientwindowms':</strong> Numeric; window (ms) to search before and after each event for compound transients. <strong>Default:</strong> 2000 ms.</li>
+<li><strong>'outputtransientdata':</strong> Logical; if true (1), outputs cut data streams for each transient event. If false (0), skips this output. <strong>Default:</strong> true (1)</li>
+<li><strong>'outputpremaxS':</strong> Numeric; Number of seconds pre transient peak to include in transient data output streams. <strong>Default:</strong> 3</li>
+<li><strong>'outputpostmaxS':</strong> Numeric; Number of seconds post transient peak to include in transient data output streams. <strong>Default:</strong> 5</li>
 </ul>
 <p><strong>OUTPUTS:</strong></p>
 <ul>
-<li><strong>DATA:</strong> The original data structure with sessiontransients_WHICHBLTYPE_THRESHOLDLABEL added in. For more details on individual variables, see the PASTa user guide page <em>Transient Detection</em>. The output contains four nested tables: <ul>
-<li><em>INPUTS:</em> Includes all required and optional inputs. If optional inputs are not specified, defaults will be applied.</li>
-<li><em>TRANSIENTQUANTIFICATION:</em> Includes the quantified variables for each transient, including amplitude, rise time, fall time, width, and AUC. </li>
-<li><em>TRANSIENTSTREAMLOCS:</em> Pre-transient baseline, transient peak, rise, and fall locations for each transient to match the cut transient stream data.</li>
-<li>_TRANSIENTSTREAMDATA: Cut data stream from baseline start to the end of the post-transient period for each transient event.</li>
+<li><strong>TRANSIENTDATA:</strong> Structure array; each element corresponds to a session and includes all fields specified in ADDVARIABLESFIELDNAMES as well as the following:<ul>
+<li><strong>params.findTransients:</strong> Structure of input parameters used for transient detection.</li>
+<li><strong>transientquantification:</strong> Table of quantified variables for each transient, including amplitude, rise time, fall time, width, and AUC.</li>
+<li>If OUTPUTTRANSIENTDATA is set to 1:<ul>
+<li><strong>transientstreamlocs:</strong> Table of pre-transient baseline, transient peak, rise, and fall locations for each transient.</li>
+<li><strong>transientstreamdata:</strong> Table of cut data streams from baseline start to the end of the post-transient period for each transient event.</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <p><strong>NOTES:</strong></p>
 <ul>
-<li>Threshold values should be calculated before using the findSessionTransients functions. Typically thresholds are set to 2-3 SDs. If the input data stream is Z scored, this can be the actual SD threshold number. If the input data stream is not Z scored, find the corresponding value to 2-3 SDs for each subject.</li>
+<li>Threshold values should be calculated before using the <em>findTransients</em> functions. We reccomend setting the threshold to 2.6 SDs. Typically thresholds are set between 2-3 SDs. If the input data stream is Z-scored, thresholds can be set to the actual SD threshold number. If the input data stream is not Z-scored, find the corresponding value to 2-3 SDs for each subject.</li>
 <li>For transient data outputs, each transient is in a separate row. </li>
 <li>If OUTPUTTRANSIENTDATA is set to anything other than 1, the TRANSIENTSTREAMLOCS and TRANSIENTSTREAMDATA tables will be skipped and not included in the output.</li>
 </ul>
 <p><strong>EXAMPLE:</strong></p>
-<pre><code>% Prepare thresholds - since Z scored streams will be analyzed, input threshold as the desired SD.
+<pre><code>% Prepare thresholds for Z-scored data stream
 for eachfile = 1:length(data)
-    data(eachfile).threshold3SD = 3;
+    data(eachfile).thresholdSD = 2.6;
 end
 
 % Find session transients based on pre-peak baseline window minimum
-[data] = findSessionTransients(data,'blmin','sigfiltz_normsession_trimmed','threshold3SD','fs');
+[data] = findTransients(data,'sigfiltz_normsession_trimmed','thresholdSD','fs');
 
-% Find session transients based on pre-peak baseline window mean
-[data] = findSessionTransients(data,'blmean','sigfiltz_normsession_trimmed','threshold3SD','fs','preminstartms',600);
+% Find session transients based on pre-peak baseline window minimum
+[data] = findTransients(data,'sigfiltz_normsession_trimmed','threshold3SD','fs','bltype','blmean');
 
 % Find session transients based on pre-peak local minimum (last minumum before the peak in the baseline window)
-[data] = findSessionTransients(data,'localmin','sigfiltz_normsession_trimmed','threshold3SD','fs','quantificationheight',0.25);
+[data] = findTransients(data,'sigfiltz_normsession_trimmed','threshold3SD','fs','bltype','localmin');
 </code></pre>
-<h3 id="findsessiontransients_blmean">findSessionTransients_blmean</h3>
-<p>Sub function to detect and quantify transient events in whole session data streams. Transient baselines are defined as the mean of the pre-transient baseline window.</p>
-<p>This function is called by the main function <em>findSessionTransients</em>, which sets default parameters for transient detection and quantification. If called outside the main function, users must specify all input values manually.</p>
-<p><strong>INPUTS:</strong></p>
-<ul>
-<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
-<li><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</li>
-<li><strong>WHICHTHRESHOLD:</strong> The name (string) of the field containing the prepared numeric threshold values for each stream. For example, 'threshold_3SD'. </li>
-<li><strong>WHICHFS:</strong> The name (string) of the field containing the sampling rate of the raw data collection in Hz.</li>
-<li><strong>PREMINSTARTMS:</strong> Number of millseconds pre-transient to use as the start of the baseline window. <em>Reccomended value: 800</em></li>
-<li><strong>PREMINENDMS:</strong> Number of millseconds pre-transient to use as the end of the baseline window. <em>Reccomended value: 100</em></li>
-<li><strong>POSTTRANSIENTMS:</strong> Number of millseconds post-transient to use for the post peak baseline and trimmed data output. <em>Reccomended value: 2000</em></li>
-<li><strong>QUANTIFICATIONHEIGHT:</strong> The height at which to characterize rise time, fall time, peak width, and AUC. Must be a number between 0 and 1. <em>Reccomended value: 0.5</em></li>
-<li><strong>OUTPUTTRANSIENTDATA:</strong> Set to 1 to output cut data streams for each transient event for further analysis or plotting. Set to 0 to skip. <em>Reccomended value: 1</em></li>
-</ul>
-<p><strong>OUTPUTS:</strong></p>
-<ul>
-<li><strong>DATA:</strong> The original data structure with sessiontransients_blmean_THRESHOLDLABEL added in. For more details on individual variables, see the PASTa user guide page <em>Transient Detection</em>. The output contains four nested tables: <ul>
-<li><em>INPUTS:</em> Includes all function inputs.</li>
-<li><em>TRANSIENTQUANTIFICATION:</em> Includes the quantified variables for each transient, including amplitude, rise time, fall time, width, and AUC. </li>
-<li><em>TRANSIENTSTREAMLOCS:</em> Pre-transient baseline start, pre-transient baseline end, transient peak, rise, and fall locations for each transient to match the cut transient stream data.</li>
-<li>_TRANSIENTSTREAMDATA: Cut data stream from baseline window start to the end of the post-transient period for each transient event.</li>
-</ul>
-</li>
-</ul>
-<p><strong>NOTES:</strong></p>
-<ul>
-<li>If called outside the main <em>findSessionTransients</em> function, note that users will have to input all parameters manually and no defaults will be applied.</li>
-<li>As for the main function, threshold values should be calculated before using the findSessionTransients functions. Typically thresholds are set to 2-3 SDs. If the input data stream is Z scored, this can be the actual SD threshold number. If the input data stream is not Z scored, find the corresponding value to 2-3 SDs for each subject.</li>
-<li>For transient data outputs, each transient is in a separate row. </li>
-<li>If OUTPUTTRANSIENTDATA is set to anything other than 1, the TRANSIENTSTREAMLOCS and TRANSIENTSTREAMDATA tables will be skipped and not included in the output.</li>
-</ul>
-<p><strong>EXAMPLE:</strong></p>
-<pre><code>% Prepare thresholds - since Z scored streams will be analyzed, input threshold as the desired SD.
-for eachfile = 1:length(data)
-    data(eachfile).threshold3SD = 3;
-end
-
-% Find session transients by directly called in the findSessionTransients_blmean function
-[data] = findSessionTransients_blmean(data,'sigfiltz_normsession_trimmed','threshold3SD','fs',800,100,2000,0.5,1);
-</code></pre>
-<h3 id="findsessiontransients_blmin">findSessionTransients_blmin</h3>
-<p>Sub function to detect and quantify transient events in whole session data streams. Transient baselines are defined as the minimum value within the pre-transient baseline window.</p>
-<p>This function is called by the main function <em>findSessionTransients</em>, which sets default parameters for transient detection and quantification. If called outside the main function, users must specify all input values manually.</p>
-<p><strong>INPUTS:</strong></p>
-<ul>
-<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
-<li><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</li>
-<li><strong>WHICHTHRESHOLD:</strong> The name (string) of the field containing the prepared numeric threshold values for each stream. For example, 'threshold_3SD'. </li>
-<li><strong>WHICHFS:</strong> The name (string) of the field containing the sampling rate of the raw data collection in Hz.</li>
-<li><strong>PREMINSTARTMS:</strong> Number of millseconds pre-transient to use as the start of the baseline window. <em>Reccomended value: 800</em></li>
-<li><strong>PREMINENDMS:</strong> Number of millseconds pre-transient to use as the end of the baseline window. <em>Reccomended value: 100</em></li>
-<li><strong>POSTTRANSIENTMS:</strong> Number of millseconds post-transient to use for the post peak baseline and trimmed data output. <em>Reccomended value: 2000</em></li>
-<li><strong>QUANTIFICATIONHEIGHT:</strong> The height at which to characterize rise time, fall time, peak width, and AUC. Must be a number between 0 and 1. <em>Reccomended value: 0.5</em></li>
-<li><strong>OUTPUTTRANSIENTDATA:</strong> Set to 1 to output cut data streams for each transient event for further analysis or plotting. Set to 0 to skip. <em>Reccomended value: 1</em></li>
-</ul>
-<p><strong>OUTPUTS:</strong></p>
-<ul>
-<li><strong>DATA:</strong> The original data structure with sessiontransients_blmin_THRESHOLDLABEL added in. For more details on individual variables, see the PASTa user guide page <em>Transient Detection</em>. The output contains four nested tables: <ul>
-<li><em>INPUTS:</em> Includes all function inputs.</li>
-<li><em>TRANSIENTQUANTIFICATION:</em> Includes the quantified variables for each transient, including amplitude, rise time, fall time, width, and AUC. </li>
-<li><em>TRANSIENTSTREAMLOCS:</em> Pre-transient baseline, transient peak, rise, and fall locations for each transient to match the cut transient stream data.</li>
-<li><em>TRANSIENTSTREAMDATA:</em> Cut data stream from baseline window start to the end of the post-transient period for each transient event.</li>
-</ul>
-</li>
-</ul>
-<p><strong>NOTES:</strong></p>
-<ul>
-<li>If called outside the main <em>findSessionTransients</em> function, note that users will have to input all parameters manually and no defaults will be applied.</li>
-<li>As for the main function, threshold values should be calculated before using the findSessionTransients functions. Typically thresholds are set to 2-3 SDs. If the input data stream is Z scored, this can be the actual SD threshold number. If the input data stream is not Z scored, find the corresponding value to 2-3 SDs for each subject.</li>
-<li>For transient data outputs, each transient is in a separate row. </li>
-<li>If OUTPUTTRANSIENTDATA is set to anything other than 1, the TRANSIENTSTREAMLOCS and TRANSIENTSTREAMDATA tables will be skipped and not included in the output.</li>
-</ul>
-<p><strong>EXAMPLE:</strong></p>
-<pre><code>% Prepare thresholds - since Z scored streams will be analyzed, input threshold as the desired SD.
-for eachfile = 1:length(data)
-    data(eachfile).threshold3SD = 3;
-end
-
-% Find session transients by directly called in the findSessionTransients_blmin function
-[data] = findSessionTransients_blmin(data,'sigfiltz_normsession_trimmed','threshold3SD','fs',800,100,2000,0.5,1);
-</code></pre>
-<h3 id="findsessiontransients_localmin">findSessionTransients_localmin</h3>
-<p>Sub function to detect and quantify transient events in whole session data streams. Transient baselines are defined as the last local minimum value before the transient peak within the pre-transient baseline window.</p>
-<p>This function is called by the main function <em>findSessionTransients</em>, which sets default parameters for transient detection and quantification. If called outside the main function, users must specify all input values manually.</p>
-<p><strong>INPUTS:</strong></p>
-<ul>
-<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
-<li><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</li>
-<li><strong>WHICHTHRESHOLD:</strong> The name (string) of the field containing the prepared numeric threshold values for each stream. For example, 'threshold_3SD'. </li>
-<li><strong>WHICHFS:</strong> The name (string) of the field containing the sampling rate of the raw data collection in Hz.</li>
-<li><strong>PREMINSTARTMS:</strong> Number of millseconds pre-transient to use as the start of the baseline window. <em>Reccomended value: 800</em></li>
-<li><strong>PREMINENDMS:</strong> Number of millseconds pre-transient to use as the end of the baseline window. <em>Reccomended value: 100</em></li>
-<li><strong>POSTTRANSIENTMS:</strong> Number of millseconds post-transient to use for the post peak baseline and trimmed data output. <em>Reccomended value: 2000</em></li>
-<li><strong>QUANTIFICATIONHEIGHT:</strong> The height at which to characterize rise time, fall time, peak width, and AUC. Must be a number between 0 and 1. <em>Reccomended value: 0.5</em></li>
-<li><strong>OUTPUTTRANSIENTDATA:</strong> Set to 1 to output cut data streams for each transient event for further analysis or plotting. Set to 0 to skip. <em>Reccomended value: 1</em></li>
-</ul>
-<p><strong>OUTPUTS:</strong></p>
-<ul>
-<li><strong>DATA:</strong> The original data structure with sessiontransients_localmin_THRESHOLDLABEL added in. For more details on individual variables, see the PASTa user guide page <em>Transient Detection</em>. The output contains four nested tables: <ul>
-<li><em>INPUTS:</em> Includes all function inputs.</li>
-<li><em>TRANSIENTQUANTIFICATION:</em> Includes the quantified variables for each transient, including amplitude, rise time, fall time, width, and AUC. </li>
-<li><em>TRANSIENTSTREAMLOCS:</em> Pre-transient baseline (local minimum), transient peak, rise, and fall locations for each transient to match the cut transient stream data.</li>
-<li><em>TRANSIENTSTREAMDATA:</em> Cut data stream from baseline window start to the end of the post-transient period for each transient event.</li>
-</ul>
-</li>
-</ul>
-<p><strong>NOTES:</strong></p>
-<ul>
-<li>If called outside the main <em>findSessionTransients</em> function, note that users will have to input all parameters manually and no defaults will be applied.</li>
-<li>As for the main function, threshold values should be calculated before using the findSessionTransients functions. Typically thresholds are set to 2-3 SDs. If the input data stream is Z scored, this can be the actual SD threshold number. If the input data stream is not Z scored, find the corresponding value to 2-3 SDs for each subject.</li>
-<li>For transient data outputs, each transient is in a separate row. </li>
-<li>If OUTPUTTRANSIENTDATA is set to anything other than 1, the TRANSIENTSTREAMLOCS and TRANSIENTSTREAMDATA tables will be skipped and not included in the output.</li>
-</ul>
-<p><strong>EXAMPLE:</strong></p>
-<pre><code>% Prepare thresholds - since Z scored streams will be analyzed, input threshold as the desired SD.
-for eachfile = 1:length(data)
-    data(eachfile).threshold3SD = 3;
-end
-
-% Find session transients by directly called in the findSessionTransients_localmin function
-[data] = findSessionTransients_localmin(data,'sigfiltz_normsession_trimmed','threshold3SD','fs',800,100,2000,0.5,1);
-</code></pre>
-<h2 id="binsessiontransients">binSessionTransients</h2>
+<h2 id="bintransients">binTransients</h2>
 <p>Used to assign individual transient events to time bins within the session for analysis of changes in transients over time. By default, sessions will be divided into 5 minute bins. Number of bins per session will be calculated by the function. Users have the option to override the defaults to change the bin length and/or manually set the number of bins per session.</p>
 <p><strong>INPUTS:</strong></p>
 <ul>
-<li><strong>DATA:</strong> This is a structure that contains at least the data stream you want to analyze, a field with the threshold values, and a field with the sampling rate of the data stream.</li>
+<li><strong>TRANSIENTDATA:</strong> Structure array output from <em>findTransients</em>. Must contain <em>'params.findTransients'</em> and <em>'transientquantification'</em> fields.</li>
 <li><strong>WHICHSTREAM:</strong> The name (string) of the field containing the stream to be analyzed for transients.</li>
 <li><strong>WHICHFS:</strong> The name (string) of the field containing the sampling rate of the raw data collection in Hz.</li>
 <li><strong>WHICHTRANSIENTS:</strong> The name (string) of the parent field containing the table of transietns that you want to identify bins for. This is the output of the <em>findSessionTransients</em> function. The name usually follows the convention <em>sessiontransients_WHICHBLTYPE_WHICHTHRESHOLD</em></li>
