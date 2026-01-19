@@ -7,6 +7,7 @@ nav:
     - Data Preparation: userguide/datapreparation.md
     - Signal Processing: userguide/signalprocessing.md
     - Transient Analysis: userguide/transientanalysis.md
+    - Trial and Event Analysis: userguide/trialanalysis.md
   - Example Analyses: exampleanalyses.md
   - Function Documentation: functiondocumentation.md
   - About: 
